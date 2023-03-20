@@ -1,0 +1,1794 @@
+%------
+% This is a template file for typesetting papers to appear in
+% the Journal of the European Mathematical Society (JEMS).
+%------
+% Before you edit this file, please read
+% Guidelines-Journals.pdf
+%------
+\documentclass[12pt]{article}
+\usepackage[lang = british]{ems-jems} %% change to `american' if you use American English
+\usepackage[skip=4pt plus1pt, indent=10pt]{parskip}
+\usepackage{algorithm}
+\usepackage{algpseudocode}
+\usepackage{caption}
+\usepackage{subcaption}
+
+\newtheorem{theorem}{Theorem}[section]
+\newtheorem{definition}{Definition}[section]
+\newtheorem{problem}{Problem}
+\newtheorem{algorithm2}{Algorithm}
+
+\newenvironment{solution}
+  {\renewcommand\qedsymbol{$\blacksquare$}\begin{proof}[Solution]}
+  {\end{proof}}
+
+  
+\def\OO{\mathcal{O}}
+\def\PP{\mathbb{P}}
+\DeclareMathOperator{\argmax}{arg\,max\,}
+%------
+% Include here your personal symbol definitions
+% and macros as well as any extra LaTeX packages
+% you need. Do not include any commands/packages
+% that alter the layout of the page, e.g. height/width.
+%------
+% Do not include packages that are already loaded:
+%   amsthm
+%   amsmath
+%   amssymb
+%   enumitem
+%   geometry
+%   caption
+%   graphicx
+%   hyperref
+%   fontenc
+%   inputenc
+% as well as:
+%   array, babel, booktabs, cite, float, footmisc, kvoptions,
+%   multicol, nag, newtxmath, newtxtext, pdf14, pdftexcmds,
+%   ragged2e, url, xcolor, xpatch, zref-base
+%------
+
+
+% To include the section number in the equation numbering:
+\numberwithin{equation}{section}
+
+
+\begin{document}
+
+%------
+% Insert the title of your paper and (if necessary)
+% a short title for the running head.
+%------
+\title{DISCRETE MARKOV CHAIN APPLICATIONS}
+\titlemark{SHORT TITLE FOR THE RUNNING HEAD}
+
+%------
+% Insert full names of the authors.
+% Add further authors as follows:
+%  \emsauthor{2}{}{}
+%  \emsauthor{3}{}{}
+% etc.
+% Abbreviate first names for the running head.
+%------
+
+\emsauthor{1}{Nicolas Errandonea}{NE}
+\emsauthor{2}{Andres Gutierrez}{AG}
+\emsauthor{3}{Roylan Martinez}{RM}
+\emsauthor{4}{Sergi Sanjuan}{SS}
+
+
+%------
+% Use \authormark if the list of authors is too
+% long for the running head: \authormark{A.~Doe et al.}
+%------
+
+%------
+% Add one \emsaffil and one \email for each author.
+%------
+\emsaffil{1}{46015; \email{ebani@alumni.uv.es}}
+\emsaffil{2}{46008; \email{angujai@alumni.uv.es}}
+\emsaffil{3}{08203; \email{grmarvar@alumni.uv.es}}
+\emsaffil{4}{03841; \email{ssansil@alumno.upv.es}}
+
+%------
+% Add MSC 2020 codes according to www.ams.org/msc/msc2020.html.
+% Secondary codes (in square brackets) are optional.
+%------
+%\classification[YYyYY]{XXxXX}
+
+%------
+% Add a list of keywords.
+%------
+\keywords{markov chains; markov process; stochastic; learning; hidden markov model; random walk; stochastic differential equations}
+
+%------
+% Insert your abstract.
+%------
+\begin{abstract} 
+A stochastic process without memory is called a Markov process. Despite the diversity of these processes, such generalization provides a theoretical framework that allows encompassing all those systems of states that depend solely on the current state. The universality of these systems relates the problem to a large number of areas of physics and mathematics. The objective of this review is to familiarize the reader with its usefulness in four different mathematical problems, providing a perspective on the conceptual importance of these chains. In turn, the mentioned areas will be presented in-depth, issuing a necessary theoretical context to highlight the need for the concept of the Markov chain.
+\end{abstract}
+
+\maketitle
+
+%------
+\section{Introduction}
+
+As described in the abstract, a stochastic process without memory is called a Markov process, it is usually represented via lineal algebra, by nodes among other mathematical representations, but with the same idea of transitions from a specific state to another, between a finite or countable number of states. Markov chains is particular stochastic process that matches the Markov property, which basically states that the probability of transitioning to any other particular state is dependent uniquely on the current state and in this paper we will only focus on the discrete applications and modelling.
+
+Markov chains have many applications, including finance or economics ---modeling stock prices---, epidemiology ---modeling the spread of diseases--- or natural language processing ---modeling word sequences in text---- and therefore its applications vary from pure and theoretical to quite practical ones. 
+
+The Markov chains are backed with a state diagram, usually represented through a matrix that can be depicted as a graph, 
+it contains nodes and edges --- and it is a directed graph so in this case directed edges --- in which each node represents a state and each directed edge represents a transition between states with a given probability. Finally the probabilistic dynamicity of the state is represented through a transition matrix which is nothing else than a square matrix where each entry represents the probability of transitioning from one state to another.
+
+Markov chains can be classified in and under different parameters and features but in general terms they are separated by the regular Markov chains, absorbing Markov chains, ergodic Markov chains and the periodic Markov Chain among others but on general terms depending on the properties of the states and transitions.
+
+So, in general terms, Markov chains are a powerful tool for modeling, studying, predicting, simulating and understanding complex behaviours and systems in the pure and applied applications accompanied then with many applications as we will review \cite{behrends2000introduction}. 
+
+\section{Reinforcement learning}
+
+
+
+The objective of this section is to present the usefulness of Markov chains in the area of machine learning as a fundamental tool to define control problems. Hand in hand with this concept, we will introduce reinforcement learning and provide tools and methods derived from its theoretical framework necessary to solve this type of problem.
+
+The fundamental scenario of reinforcement learning consists of an agent interacting with a given enviroment through actions. Each time the agent performs an action, it receives a reward and an update on the status of the enviroment. The objective of the agent will be to find an optimal strategy for taking actions to maximize the rewards. From now on, we will call each one of the strategies policies.
+
+In the case that the next states only depend on the current state and action,  the problem can be posed as a Markov Decision Problem (MDP). If the properties of the enviroment are known, we will review how to solve the MDP using strategies known as dynamic programming. If the enviroment is unknown, we will present learning techniques based on stochastic approximation to solve the MDP. Finally, for large-dimensional problems where all preceding strategies fail due to high computational cost, we will present the Temporal Differences (TD) learning techniques as a plausible alternative for the problem resolution. The section will conclude with  Tesauro's Backgammon problem \cite{tesauro1992temporal} \cite{tesauro1994td},  a problem solved by the TD method that resulted in a turning point in the area.
+
+
+\subsection{Markov Decision Problems and Dynamic Programming}
+
+Firstly, we will introduce a Markov decision process and the initial theoretical framework following the development of the renowned book by Mohri \cite{mohri2018foundations}, which will be necessary to develop the algorithms that solve the MDP.
+
+\begin{definition}
+It is defined as a Markov decision process a model \\
+agent-enviroment described by the following:
+\begin{itemize}
+    \item A set of states $S$.
+    \item An indexing time set $T$.
+    \item An initial state $s_0.$
+    \item A set of actions $A$
+    \item  The transition probabilities \hspace{1mm}  $P[s' \hspace{1mm} | \hspace{1mm}(s,a)]$.
+    \item The reward probabilities  \hspace{1mm}  $P[r \hspace{1mm} | \hspace{1mm}(s,a)]$.
+\end{itemize}
+\end{definition}
+
+
+We denote the process Markovian as the transition and reward probabilities depend solely on the current state and action. Along this review, we will always consider an infinite discrete-time process, with finite sets of states and actions. As the probabilities are not time-dependent, the Markov decision process considered will be stationary.
+
+
+A MDP is defined as a control problem that can be described by a Markov decision process. Therefore, the resolution of the MDP   will lie in determining the best course of action in each of the different states, or in other words, selecting a policy.
+
+
+
+\begin{definition}
+   A policy $\pi$ is defined as a map $\pi: S\longrightarrow \Delta(A)$, where $\Delta(A)$ is the set of all possible probability distributions in $A$. A policy is deterministic if the mapping can be rewritten as $\pi:S \longrightarrow  A$, that is, a policy where the action to be taken is always completely determined.
+\end{definition}
+
+
+
+
+Note that if the agent follows a deterministic policy $\pi$, the Markov decision process can be represented as a Markov chain. The agent no longer makes any decisions, since there are given by the policy, and the change from one state to another in the chain will be given by the transition matrix $T_\pi$, where $T_\pi(i,j )=P(s^j \hspace{.5mm} |\hspace{.5mm} (s^i,\pi(s^i))$ and $s^i$ represents the state $i$ (not to be confused with the state of the process at time $i$).
+
+
+
+
+ It is reasonable to deduce that eventually, a criterion to compare policies will be needed.  Therefore it would be wise to associate the policies with a value or set of values.  We proceed with the following definition:
+
+
+\begin{definition}
+    The discounted value $V_{\pi}(s)$  of a (deterministic) policy $\pi$ whose initial state is $s$  is defined as the expected value of the discounted rewards received when a MPD starts at $s$ and the agent follows the policy $\pi$.
+    \begin{equation}
+        V_{\pi}(s)=\mathbb{E}_{a_t=\pi(s_t)}[\sum_{t=0}^{\infty}\gamma^t r(s_t,a_t) \hspace{0.75mm} |\hspace{0.75mm} s_0=s , a_0=\pi(s_0)].
+    \end{equation}
+\end{definition}
+
+
+  The expectation is regarding the states $s_t$ reached and the rewards $ r(s_t,a_t)\in \Delta (R(s_t,a_t)) $ obtained. Note that a parameter $\gamma \in (0,1) $  is used to prevent any of these values from not being bounded so as to have a way to compare policies. Normally the value of $\gamma$ is close to one.
+
+
+It is natural to seek to apply policies with the largest possible $V_{\pi}(s)$ values. In fact, as we will see further in the section, for all MDP there will be optimal policies defined as follows:
+
+
+
+\begin{definition}
+  A  deterministic policy $\pi$ is optimal if  for every other deterministic policy $\pi^{*}$ it is true that $V_{\pi}(s) \geq V_{\pi^*}(s) \hspace{2mm}\forall s\in S$.
+   
+\end{definition}
+
+
+
+
+Note that the previous definitions could have been generalized for any policy, and not only for deterministic policies. This said, in the following pages we will just consider deterministic policies, and we will build all subsequent definitions in this fashion. The reason behind it is that the notation becomes much simpler, and it is proven in \cite{mohri2018foundations} that there is always an optimal policy for all MDP that is deterministic. 
+
+
+Mohri first proves a series of properties that policies and optimal policies must abide,  and then concludes (theorem 17.7\cite{mohri2018foundations}) that there is always an optimal deterministic policy. Therefore, and given that the reasoning to reach the latter conclusion is analogous considering general policies or only deterministic ones, we will proceed in the latter way and let the reader intuit how the demonstrations and properties that will be introduced could be generalized.
+
+
+In order to prove  the existence of optimal policies, the following definition will be necesary:
+
+
+
+\begin{definition}
+
+    Let $s \in S$ and $a\in A$. The state-action value $Q_{\pi}(s,a)$ associated with a certain policy $\pi$ is defined as the expected value of the sum of rewards by taking the action $a$ for the initial value $s$ and  following the policy $\pi$ in the latter stages, that is:
+    \begin{equation}
+        Q_\pi(s,a)= \mathbb{E}[r(s,a)] +\mathbb{E}_{a_t=\pi(s_t)}[\sum_{t=1}^{\infty}\gamma^t r(s_t,a_t) \hspace{0.75mm} |\hspace{0.75mm} s_0=s,a_0=a]=\mathbb{E}[r(s,a) +\gamma V_{\pi}(s_1)\hspace{0.75mm} | \hspace{0.75mm} s_0=s,a_0=a].
+    \end{equation}
+    Note that when $a=\pi(s)$ we will have $Q_{\pi}(s,\pi(s))=V_{\pi}(s)$.
+\end{definition}
+
+
+
+As we already have enough tools to prove that there is always an optimal policy, we will proceed with the following theorems that will lead to said result.
+
+
+
+
+\begin{theorem}
+   Let two policies be $\pi$ and $\pi*$. It is true that :
+     \begin{align}    
+    \forall s \in S \hspace{2mm}Q_{\pi^*}(s,\pi(s)) \geq Q_{\pi^*}(s,\pi^*(s))  \longrightarrow  V_{\pi}(s) \geq V_{\pi^*}(s)  \hspace{2mm} \forall s \in S.
+    \end{align}
+    
+    As long as one of the inequalities on the left hand side is strictly fulfilled, we will have that at least one of the inequalities on the right hand side is also strictly fulfilled
+\end{theorem}
+
+ 
+ \begin{proof} 
+
+ 
+ 
+  We assume that the first condition is fulfilled. Therefore let $ s\in S$ we have:\\ [-10pt]
+
+
+   \begin{ecuation*}
+  $V_{\pi^*}(s)  \hspace{1mm} = \hspace{1mm} Q_{\pi^*}(s,\pi^*(s)) \leq Q_{\pi^*}(s,\pi(s))   \hspace{1mm}=  \hspace{1mm} \mathbb{E}[r(s,\pi(s) +\gamma V_{\pi^*}(s_1)\hspace{0.75mm} | \hspace{0.75mm} s_0=s]  \hspace{1mm} =$ \\ [-12pt]
+  
+  $\mathbb{E} [r(s,\pi(s)) +\gamma Q_{\pi^*}(s_1,\pi^*(s_1)) \hspace{0.75mm} | \hspace{0.75mm} s_0=s]  \hspace{1mm} \leq \hspace{1mm} \mathbb{E} [r(s,\pi(s)) +\gamma Q_{\pi^*}(s_1,\pi(s_1)) \hspace{0.75mm} | \hspace{0.75mm} s_0=s]$\\ [-12pt]
+  
+  $=  \hspace{1mm} \mathbb{E}[r(s,\pi(s)) +\gamma  r(s_1,\pi(s_1)) + \gamma^2 V_{\pi^*}(s_2)\hspace{0.75mm} | \hspace{0.75mm} s_0=s].$\\[-12pt]
+
+\end{ecuation*}
+
+
+ Following these inequalities $T$ times it can  be deduce that
+
+$$ V_{\pi^*}(s) \leq \mathbb{E}[\sum_{t=0}^{T} r(s_t,\pi(s_t))  + \gamma^{T+1} V_{\pi^*}(s_{T+1})\hspace{0.75mm} | \hspace{0.75mm} s_0=s], $$
+
+ where taking the limits to infinity we end up with
+
+  $$ V_{\pi^*}(s) \leq \mathbb{E}[\sum_{t=0}^{\infty}\gamma^{t} r(s_t,\pi(s_t)) \hspace{0.75mm} | \hspace{0.75mm} s_0=s] = V_{\pi}(s).$$
+
+
+
+  Let us note that if for the state $s=s_0$  \hspace{2mm} $Q_{\pi^*}(s_0,\pi^*(s_0))< Q_{\pi^*}(s_0,\pi(s_0))$ is strictly fulfilled we have just verified that the same thing happens for $ V_{\pi^*}(s_0) < V_{\pi}(s_0)$.
+  
+\end{proof}
+
+
+
+
+\begin{theorem}
+    A policy $\pi$ is optimal if  $ \hspace{1mm}\forall s \in S$ holds that
+    $$ \pi(s) \in argmax_{a \in A} Q_{\pi}(s,a).$$
+\end{theorem}
+
+
+\begin{proof}
+    $\longrightarrow$ We assume that the first condition is true. Therefore, $\forall \pi*$ and $\forall s \in S$ holds that $V_\pi(s) \geq V_{\pi*}(s)$. Let $s_0 \in S$. We have that the previous inequality holds in particular for all policies identical to $\pi$ except in the state $s_o$. Therefore each of these policies $\pi^*$ satisfies that $\forall s \in S \setminus \{s_0\} \hspace{ 3mm} Q_{\pi}(s,\pi^*(s)) \geq Q_{\pi}(s,\pi(s))$. By the previous theorem and its consequence, we can conclude that $ \pi(s_0) \in argmax_{a \in A} Q_{\pi}(s_0,a)$.Otherwise $\pi$ would not be an optimal policy.
+    
+   
+
+  
+   $\longleftarrow$ The proof of this implication formulated by Mohri \cite{mohri2018foundations} is inconsistent. Therefore, we include the correct proof derived from Puterman's approach in \cite{puterman2014markov}. This approach includes the use of some matrix notation that will be presented in more detail as the section progresses.
+
+
+   Suppose we have a policy $\pi^*$ such that it satisfies the second condition. Let's see that for any other policy  $\pi$ we have $V_{\pi^*} \geq V_{\pi}$, where the inequality is component by component. First, let's note that $\hspace{2mm } Q_{\pi^*}(s,\pi^*(s)) =max_{a \in A} Q_{\pi^*}(s,a) $ holds $\forall s \in S $, in particular $ \hspace{ 2mm}V_{\pi^*}(s)= Q_{\pi^*}(s,\pi^*(s)) \geq Q_{\pi^*}(s ,\pi(s)) \hspace{ 3mm} \forall s \in S$. Therefore, if we rewrite the expressions in matrix form we get $V_{\pi^*} \geq R_\pi + \gamma T_\pi V_{\pi^*} $, where $T_\pi$ is the transition matrix associated with the policy $\pi$ and $R_\pi$ the expected reward vector, where element $i$ is $\mathbb{E}[r(s^i,\pi(s^i)]$.
+
+
+   On the other hand, we also have the following matrix equality $V_{\pi} = R_\pi + \gamma T_\pi V_{\pi} $. Therefore, nesting the inequality $n$ times, the equality infinite times, and subtracting both expressions we obtain the following inequality:
+   
+   $$V_{\pi^*}- V_{\pi} \geq \gamma^n (T_\pi)^n V_{\pi^*}- \sum_{t=n}^{\infty}\gamma^t (T_\pi)^t R_\pi $$ 
+
+
+
+   Let $\epsilon >0$. Since $ (\gamma T_\pi)^t \rightarrow 0$, we can choose $n$ large enough such that $\gamma^n ||(T_\pi)^n R_\pi||_\infty \leq \epsilon$. Therefore: 
+
+   $$ V_{\pi^*}- V_{\pi} \geq  - \sum_{t=n}^{\infty}\gamma^t (T_\pi)^t R_\pi \geq  -\frac{\epsilon \gamma}{1-\gamma} 1_S 
+ \hspace{3mm}  \forall \epsilon >0$$ 
+
+ We then conclude that $V_{\pi^*} \geq V_{\pi} \hspace{2mm} \forall \pi $, so $\pi^*$ is optimal.
+
+
+    
+\end{proof}
+
+
+
+\begin{theorem}
+    For all MDP (with the restrictions used in the definition ) there is an optimal policy.
+\end{theorem}
+
+
+
+\begin{proof}
+    Let  $\alpha$ be $\alpha= argmax_{\pi}\sum_{s \in S}V_{\pi}(s)$, which we know exists because there are only $|A|\cdot |S|$ policies . We assume that $\alpha$ is not an optimal policy. Therefore, by the previous theorem, we can assume that there exists a $s_0$ and a $a_0$ such that $Q_{\alpha}(s_0,\alpha(s_0)) <Q_{\alpha}(s_0,a_0) $. Applying Theorem 2.1 for the policy $\pi$ identical to $\alpha$ except in $\pi(s_0)=a_0$, we have that $\forall s \in S$ holds $V_{\pi} (s)\geq V_{\alpha}(s)$, where the inequality is surely strict in more than one term.We then  conclude that $\sum_{s \in S}V_{\pi}(s) >\sum_{s \in S}V_{\alpha}(s)$,  finding  a contradiction.
+\end{proof}
+
+
+
+
+
+
+The Bellman  optimality equations can be defined based on the relationship between the discounted values $V^*$  of the optimal policy $\pi^*$  and the state-action values of the same policy that is deduced from Theorem 2.2
+$$V^*(s)=Q^*(s,\pi^ *(s))=max_{a\in A}Q^*(s,a), $$as well as on the very definition of these state-action values. From now on, $V^*$  will be  denoted as the optimal value, and the state-action values of the optimal policy will be denoted as $Q^*(s,a)$ .
+
+
+\begin{definition}[{ \bf Bellman optimality ecuations}]
+    The optimal discounted values  of a MDP satisfy the following system of equations:
+
+    \begin{equation}
+        \forall s \in S  \hspace{3mm} V^*(s)=max_{a \in A} \Bigl\{ \mathbb{E}[r(s,a)]+ \gamma \sum_{s' \in S} \mathbb{P}[s' \hspace{.5mm}|\hspace{.5mm} (s,a) ]V^*(s')\Bigl\}.
+    \end{equation}
+      
+    
+\end{definition}
+
+
+
+Furthermore, if we consider that for each policy $\pi$  that $V_{\pi}(s)=Q_{\pi}(s,\pi(s))$
+
+
+
+
+
+\begin{definition}[{ \bf Bellman policy equations }]
+    The  discounted values  of a  policy $\pi$ satisfy the following linear system of equations:
+
+    \begin{equation}
+        \forall s \in S  \hspace{3mm} V_{\pi}(s)=\mathbb{E}[r(s,\pi(s))]+ \gamma \sum_{s' \in S} \mathbb{P}[s' \hspace{.5mm}|\hspace{.5mm} (s,\pi(s)) ]V_{\pi}(s').
+    \end{equation}
+      
+    
+\end{definition}
+
+
+Since the previous system is linear, it can be written as the following matrix system $V_\pi = R_\pi + \gamma T_\pi V_\pi$, where $T_\pi$ is the transition matrix associated with the policy $\pi$ and $R_\pi$ the expected reward vector, where element $i$ is $\mathbb{E}[r(s^i,\pi(s^i)]$.It is proven in \cite{mohri2018foundations} that the matrix $(I-\gamma T_\pi)$ is always invertible ,so we  can conclude that:
+
+\begin{theorem}
+   The Bellman policy equations have a unique solution $V_\pi= ( 1 - \gamma T_\pi)^{-1}R_\pi$
+\end{theorem}
+
+
+
+The Bellman equations form the core of dynamic programming, where algorithms use these equations to generate convergent methods to the optimal values $V^*$ or the optimal policies $\pi^*$. The need for these algorithms derives from the impossibility of solving the optimality Bellman equations directly, as well as the computational cost of solving the system of equations associated with each of the policies to obtain $V_\pi$. However, these algorithms will need to know explicitly the MDP  enviroment conditions to solve it, that is, the transition matrices $T_\pi$ and rewards $R_{\pi}$, so they cannot be applied to problems where the enviroment is unknown. The most widely used algorithms are VI (value interaction) and PI (policy interaction).
+
+
+
+
+
+
+The VI method is an algorithm that seeks to find the optimal policy  obtaining the optimal values $V^*$ by iteratively solving the Bellman optimality equations. The iterations are given by evaluating  $V$ values  in the following function $\theta (V)$:
+
+
+$$  \forall s \in S  \hspace{2mm} [\theta(V)](s)= max_{a \in A} \Bigl\{ \mathbb{E}[r(s,a)]+ \gamma \sum_{s' \in S} \mathbb{P}[s' \hspace{.5mm}|\hspace{.5mm} (s,a) ]V(s')\Bigl\}, $$which is nothing more than the right-hand side of Bellman's optimality equations. For each $s \in S$  it is selected the value $a \in A$ that maximizes the previous expression, that is, a policy. Therefore the function  may be rewritten as $\theta(V)= max_{\pi} \bigl\{ R_\pi+ \gamma T_\pi V \bigl\} $ Let's  see  in {\bf Algorithm 1}  how the method is structured :
+
+
+\begin{algorithm}
+\caption{VI algorithm}
+\begin{algorithmic}
+\State Initialize $V_0$ with a random values
+\State Select $\gamma \in (0,1)$
+\State $V \longleftarrow V_0$
+\While{ $\lvert \lvert  V- \theta(V)  \rvert   \rvert_{\infty} \geq \frac{(1-\gamma)\epsilon}{\gamma}$}
+\State $V \longleftarrow  \theta(V) $
+\EndWhile
+\State $ \pi \in argmax_{\pi}  \bigl\{ \hspace{1mm} R_\pi+ \gamma T_\pi V\bigl\} $ \\
+\Return $\pi$ 
+\end{algorithmic}
+\end{algorithm}
+
+\vspace{2mm}
+
+To prove that this method is actually convergent and appropriate for our problem we will have to check the following:
+
+\begin{theorem}
+
+ The three following statements are met:
+    
+ \begin{itemize}
+     \item For every initial value $V_0$ we have that the sequence $V_{n+1}=\theta(V_n)$ converges to $V^*$.
+     \item If $\lvert \lvert V_{n+1}- V_n \rvert \rvert_{\infty} \leq \frac{(1-\gamma)\epsilon}{\gamma}$ then $ \lvert \lvert  V^* - V_{n+1}  \rvert \rvert_{\infty} \leq \epsilon$.
+      \item If  $ \lvert  \lvert  V^*- V_{n}  \rvert \rvert_{\infty} \leq \epsilon$ The policy $ \pi \in argmax_{\pi} \bigl\{  \hspace{1mm} R_\pi+ T_\pi V_n\bigl\} $ has $\lvert \lvert V^*-V_\pi \rvert \rvert_{\infty} \leq\frac{2\epsilon}{1-\gamma}$ near-optimal values .
+ \end{itemize}
+\end{theorem}
+
+
+
+
+
+
+
+
+
+
+
+
+ 
+\begin{proof}
+
+ 
+      
+ 
+   First of all, it is evident that $V^*=\theta (V^*)$ since the optimal values satisfy Bellman's optimality equations. On the other hand, the function $\theta$ is $\gamma$-Lipschitz for the infinity norm (Theorem 17.11 \cite{mohri2018foundations}). Therefore, it can be  deduced that for $n\in \mathbb{N}$
+
+   \begin{ecuation*}
+    \lvert\lvert V^*- V_{n+1} \rvert \rvert_{\infty} =\lvert\lvert \theta(V^*)- \theta(V_n) \rvert  \rvert_{\infty} \leq \gamma \lvert\lvert V^*- V_{n}  \rvert \rvert_{\infty}\leq \gamma^{n+1} \lvert\lvert V^*- V_{0} \rvert \rvert_{\infty}, 
+     \end{ecuation*}
+    
+     concluding that the sequence will converge to $V^*$ regardless of the  initial value $V_0$.
+
+
+   \vspace{3mm}
+    
+    At the same time,
+
+    \begin{ecuation*}
+    \lvert\lvert V^*- V_{n+1} \rvert \rvert_{\infty} \leq \lvert\lvert V^*- \theta(V_{n+1}) \rvert \rvert_{\infty} +\lvert\lvert \theta(V_{n+1})- V_{n+1} \rvert \rvert_{\infty} = \lvert\lvert \theta(V^*)- \theta(V_{n+1}) \rvert \rvert_{\infty} + 
+     \begin{ecuation*}
+    
+     \begin{ecuation*}
+    \lvert\lvert \theta(V_{n+1})- \theta(V_{n})\rvert \rvert_{\infty} \leq \gamma\lvert\lvert V^*- V_{n+1} \rvert \rvert_{\infty}+ \gamma \lvert\lvert V_{n+1}- V_{n}\rvert \rvert_{\infty}$.
+   \end{ecuation*}
+   
+   
+   
+   Therefore regrouping terms we obtain that $\lvert\lvert V^*- V_{n+1} \rvert \rvert_{\infty} \leq \frac{\gamma}{1-\gamma}  \lvert\lvert V_{n+1}- V_{n}\rvert \rvert_{\infty}$.  It just has been  proved that if $ \lvert \lvert  V_{n+1}- V_n \rvert  \rvert_{\infty}\leq (1-\gamma)\epsilon}/ \gamma $  then  $ \lvert \lvert   V^*- V_{n+1}  \rvert  \rvert_{\infty} \leq \epsilon $. The  $\epsilon$-convergence of the algorithm will be of the order of $log(1/\epsilon)$, as it is shown in (Theorem 17.11 \cite{mohri2018foundations}). 
+
+
+    \vspace{3mm}
+
+    Finally take the policy $\pi \in argmax_{\pi} \bigl\{ \hspace{1mm} R_\pi+ T_\pi V_n\bigl\}$ where $\lvert \lvert V^*- V_{n}\rvert \rvert_{\infty} \leq \epsilon$. It can  be deduced that $R_\pi+ T_\pi V^* \geq R_\pi+ T_\pi( V_n -\epsilon) = V_{n+1} -\epsilon \geq V^* + 2\epsilon $, where the inequalities are component to component. It can be  concluded that $\forall s \in S \hspace{3mm} Q^*(s,\pi(s)) +2\epsilon \geq Q^*(s,\pi^*(s))$. Proceeding with a demonstration similar to the one used Theorem 2.1, let $s \in S$:
+
+    \begin{ecuation*}
+    
+    V^*(s)  \hspace{1mm} = \hspace{1mm} Q_{\pi^*}(s,\pi^*(s)) \leq Q_{\pi^*}(s,\pi(s)) +2\epsilon  \hspace{1mm}=  \hspace{1mm} \mathbb{E}[r(s,\pi(s) +\gamma V^*(s_1)\hspace{0.75mm} | \hspace{0.75mm} s_0=s]+2\epsilon  \hspace{1mm} = \\[-15pt]
+     
+    \mathbb{E} [r(s,\pi(s)) +\gamma Q_{\pi^*}(s_1,\pi^*(s_1)) \hspace{0.75mm} | \hspace{0.75mm} s_0=s] +2\epsilon   \hspace{1mm} \leq \hspace{1mm} \mathbb{E} [r(s,\pi(s)) +\gamma( Q_{\pi^*}(s_1,\pi(s_1)) + \\[-15pt]
+    
+    2\epsilon) \hspace{0.75mm} | \hspace{0.75mm} s_0=s]+2\epsilon =  \hspace{1mm} \mathbb{E}[r(s,\pi(s)) +\gamma  r(s_1,\pi(s_1)) + \gamma^2 V_{\pi^*}(s_2)\hspace{0.75mm} | \hspace{0.75mm} s_0=s] +2\epsilon +\gamma2 \epsilon$.\\
+     \end{ecuation*}
+     
+     Following these inequalities $T$ times we can deduce that$$ V_{\pi^*}(s) \leq \mathbb{E}[\sum_{t=0}^{T}\gamma^{t} r(s_t,\pi(s_t))+\sum_{t=0}^{T}\gamma^{t} 2\epsilon  + \gamma^{T+1} V_{\pi^*}(s_{T+1})\hspace{0.75mm} | \hspace{0.75mm} s_0=s], $$  
+ were taking the limits to infinity we end up with $$ V_{\pi^*}(s) \leq \mathbb{E}[\sum_{t=0}^{\infty}\gamma^{t} r(s_t,\pi(s_t)) \hspace{0.75mm} | \hspace{0.75mm} s_0=s] +\sum_{t=0}^{\infty}\gamma^{t} 2\epsilon = V_{\pi}(s) +\frac{2\epsilon}{1-\gamma}.$$
+  
+  We  conclude  that $\lvert \lvert V^*-V_\pi \rvert \rvert_{\infty} \leq\frac{2\epsilon}{1-\gamma}$.
+
+
+
+  
+  \end{proof}
+  
+
+
+ 
+
+On the other hand, the PI algorithm consists of evaluating the value of certain policies, and from these obtained values building a new policy that is superior to its predecessor. Let's see the  structure of PI in {\bf Algorithm 2}:
+
+\begin{algorithm}
+\caption{PI algorithm}
+\begin{algorithmic}
+\State Initialize $\pi_0$ with a random values
+\State $\pi \longleftarrow \pi_0$
+\State $V_\pi=(I-\gamma T_\pi)^{-1}R_\pi $
+
+\While{$V_\pi \neq max_{\pi^*} \bigl\{ \hspace{1mm} R_{\pi^*}+ \gamma T_{\pi^*} V_\pi\bigl\}$}
+\State$\pi = argmax_{\pi^*} \bigl\{ \hspace{1mm} R_{\pi^*}+ \gamma T_{\pi^*} V_\pi\bigl\}$
+\State $V_\pi=(I-\gamma T_\pi)^{-1}R_\pi $
+\EndWhile
+
+\Return $\pi$
+\end{algorithmic}
+\end{algorithm}
+
+
+Proving that this algorithm converges is relatively simpler than in the previous case. For each new policy $\pi^*$ elaborated   $\forall s \in S \hspace{2mm} Q_\pi( s,\pi^*(s))\geq Q_\pi(s,\pi(s))$, so it follows that $V_{\pi^*}\geq V_{\pi}$.In the case of not being able to update the policy, it will be true that $\forall s \in S \hspace{2mm} \pi(s)=argmax_{a \in A} \hspace{1mm} Q_\pi(s,a) $ so it is proven that the policy is optimal. 
+
+
+It is proven in Theorem 17.13 \cite{mohri2018foundations} that if the initial values of VI are $V_{\pi_0}$ and the initial policy of PI is $\pi_0$ then PI will converge in a smaller number of steps. Despite this, each of these steps will be more computationally expensive, as inverse matrices have to be computed. 
+
+
+\subsection{Stochastic approximation to solve the curse of modeling}
+
+From this point on we will consider a more general scenario for  MDPs, where the enviroment might be unknown, that is, the agent will not have access to the transition matrices or the probability distributions of the rewards. Therefore, dynamic programming algorithms become useless for this type of problem. This situation is commonly known as the modeling curse.
+
+
+
+So, how can the agent try to figure out which is the best policy in this context? As the reader already might have deduced, it is necessary for him to try to obtain information from the system by interacting with it. Within reinforcement learning, two types of approaches are employed for this situation. Those algorithms prepared for obtaining the optimal policy directly are known as model-free approaches while the algorithms that try first to predict the enviromental conditions of the problem are defined as model-based approaches. In this section, only model-free algorithms will be introduced.
+
+
+Since the algorithms used for reinforcement learning are related to stochastic approximation techniques, some necessary results will be presented that will guarantee the convergence of our algorithm. Let us remember that stochastic algorithms are used to solve optimization problems whose objective function has a single fixed point and is only accessible through noisy data or when the function is defined as an expected value of random variables.
+
+
+
+More formally, in a stochastic optimization problem we seek to obtain the solution of a system $x=H(x)$ from which we cannot obtain the expression of $H$, but only samples i.i.d. with a certain noise $H(x_i) +w_i$.In our case, $Q^*$, the vector with all the values $Q^*(s,a)$, will be the fixed value of a certain function $H$.
+
+
+The first result  \cite{robbins1951stochastic}is based on the law of large numbers and will allow the reader to get insight of the reason for the convergence of the algorithms that will be presented below.
+
+
+
+\begin{theorem}[{\bf Robbins-Monro mean estimation }]
+     Let $X$ be a random variable with values in $[0,1]$ and $x_1,x_2,x_m$ samples i.i.d. of $X$. Then the series $(\mu_m)_{m\in \mathbb{N}$ with values:
+      $$\mu_{m+1}=(1-\alpha_m)\mu_m+ \alpha_m(x_{m+1}),$$
+      that meets the following conditions $\mu_0=x_0, \hspace{3mm} \alpha_m\in[0,1],  \hspace{3mm} \sum_{n=0}^{\infty}\alpha_n=\infty, \hspace{3mm}\sum_{n=0}^{\infty}\alpha_n^2 \leq\infty $  converges almost surely to the expected value of $X$.
+      
+\end{theorem}
+
+
+The following theorem \cite{mohri2018foundations}, more complex, will be the one that guarantees  the convergence of the two algorithms that will be presented further  in this section.
+
+
+\begin{theorem}
+   Let $H$ be   a mapping $H: \mathbb{R}^n\longrightarrow \mathbb{R}^n$, $(w_m)_{m\in \mathbb{N}}\in \mathbb{R}^n$ a series of random variables, $(\alpha_m)_{m\in \mathbb{N}}\in \mathbb{R}^+ $ a sequence of real values , and $(x_m)_{m\in \mathbb{N}}\in \mathbb{R}^n$ 
+ a sequence defined as:
+
+    $$\forall n \in \{1,....N\}  \hspace{3mm} x_{t+1}(s)=x_t(s)+\alpha_t(s)[H(x_t)(s)-x_t(s) +w_t(s)],$$
+
+   for a certain $x_0$ . It is defined $F_t$ as $F_t=\{(x_{t'})_{t'\leq t},(w_{t'})_{t'\leq t},(a_{t'})_{t' \leq t}\}$ and it is assumed that the following conditions are met:
+
+    \begin{itemize}
+        \item $\exists K_1 ,K_2 \in \mathbb{R^n} \hspace{3mm} \mathbb{E}[\lvert \lvert w_t \rvert \rvert^2(s) \hspace{1mm} | \hspace{1mm} F_t] \leq K_1 + K_2\lvert \lvert x_t \rvert \rvert^2$ for some norm .
+        \item $\mathbb{E}[ w_t  \hspace{1mm} | \hspace{1mm} F_t]=0$
+        \item $\forall n \in \{1,....N\} \hspace{2mm}\sum_{n=0}^{\infty}\alpha_n(s) =\infty 
+ \hspace{2mm} \sum_{n=0}^{\infty}\alpha_n^2(s) \leq\infty$
+        \item $H$ is  $\lvert \lvert \hspace{2mm} \rvert \rvert_{\infty}$ $\beta$-Lipschitz  where $\beta \in (0,1)$ with a fixed point $x^*$.
+    \end{itemize}
+
+   Then, the sequence $x_t$  converges almost certainly to $x^*$.
+    
+\end{theorem}
+
+
+
+
+ Reinforcement learning algorithms shown in this review consist of two basic units: the learning policy, which selects which state-action pairs are explored during execution, and the update rule, which defines the new estimate of the values that there are approximating in each iteration.
+ 
+ 
+ 
+ This said,let's go on and present two well-known stochastic algorithms of Reinforcement learning, where both algorithms approximate  $Q^*(s,a)$ and  are based on the formal  definition of optimal state-action values, that is:
+
+$$Q^*(a,s)=\mathbb{E}[r(s,a)]+ \gamma \sum_{s' \in S} \mathbb{P}[s' \hspace{.5mm}|\hspace{.5mm} (s,a) ]V^*(s')=\mathbb{E}[r(s,a) + \gamma max_{a \in A}Q^*(s',a)]. $$
+
+
+We will first present the Q-learnirg algorithm  in {\bf Algorithm 3}:
+
+
+\begin{algorithm}
+\caption{Q-learning algorithm}
+\begin{algorithmic}
+\State We initialize all  \hspace{2mm} $Q_0(s,a)=0$
+\State $Q \longleftarrow Q_0$
+\For{ \hspace{2mm}t\hspace{1mm}=\hspace{1mm}0\hspace{1mm}:\hspace{1mm}T \hspace{2mm}}
+\State Select $s\in S$ randomly
+\For{each step of $t$ epoch}
+\State Select $a \in A$ using $\theta(Q,s)$ learning policy.
+\State Let  $r(s,a)$ be the reward obtained
+\State Let  $s'$ be the  next state of the enviroment
+\State $Q(s,a)\leftarrow Q(s,a) + \alpha_m(s,a)[r+ \gamma max_{a'\in A}Q(s',a') -Q(s,a)] $ 
+\State $s \leftarrow s'$
+\EndFor
+\EndFor
+\State $\pi(s)=argmax_{a\in A}Q(s,a)$
+
+\Return $\pi$ 
+\end{algorithmic}
+\end{algorithm}
+
+
+
+
+
+This algorithm does not need to compute the properties of the enviroment, but only to be able to interact with it (which is exclusively the objective of the subsection). 
+
+
+First, the algorithm encounters the current state of the enviroment and selects action $a$ following the learning policy $\theta(Q^*,s)$. Note that this algorithm learning policy is different from an MDP policy, as will be explained below. Once the action is selected, the enviroment will grant the agent a reward and a new state, and  $Q^*(s,a)$ will be updated
+$$Q^*(s,a)\leftarrow Q^*(s,a) + \alpha_m(s,a)[r+ \gamma max_{a'} Q^*(s',a') -Q^*(s,a)]$$ as described, where $m$ is the number of times $Q^*(s,a)$ has been updated. We take the new $s\leftarrow s'$ and repeat the process a certain number of times defined by the algorithm until it returns to the initial situation where it starts a new interaction with the enviroment.
+
+
+Robbins Monro's theorem gives us an intuition of why the algorithm is convergent, although the theorem that justifies its convergence is Theorem 2.7. Theorem 17.18  of \cite{mohri2018foundations} provides a detailed proof, from which it can be concluded that the algorithm will be convergent only  when for an infinite number of iterations $T$ all $Q^*(s,a)$ are updated infinite times and :$$   \forall s \in S  \hspace{1mm}  \forall a \in A    \hspace{2mm}  \alpha_m(s,a)\in[0,1]  \hspace{3mm} \sum_{n=0}^{\infty}\alpha_n(s,a)=\infty \hspace{3mm}\sum_{n=0}^{\infty}\alpha_n(s,a)^2 \leq\infty  .$$The first condition directly affects the definition of our learning policy $\theta(Q^*,s)$, since it is obliged to permit access to all the possible actions.
+
+
+
+The trivial example that meets the conditions would be to take $\alpha_m(s,a)=\frac{1}{m}$ and the learning policy $\theta(Q^*,s)=random\{ a\in A\}$, that is, the policy that selects the action at random. This learning policy is purely exploratory, however it will converge very slowly. A  more commonly used policy is the so-called $\epsilon$-Greedy that for each pair $(Q^*,s)$ selects the action $a=argmax_{a\in A} Q^*(s,a)$ with probability $1-\epsilon$ , and any other random action with probability $\epsilon$.This policy favors following the most fruitful actions founded  so far, but 
+ still meets the conditions and allows exploration.
+
+
+Reinforcement learning algorithms whose update value is correlated with the learning policy will be called on-policy algorithms. SARSA,  presented  in {\bf Algorithm 4} below, is a transformation of Q-learning to an on-policy algorithm.
+
+
+\begin{algorithm}
+\caption{SARSA-learning algorithm}
+\begin{algorithmic}
+\State We initialize all  \hspace{2mm} $Q_0(s,a)=0$
+\State $Q \longleftarrow Q_0$
+\For{ \hspace{2mm}t \hspace{1mm}= \hspace{1mm}0 \hspace{1mm}: \hspace{1mm}T \hspace{2mm}}
+\State Select $s\in S$ randomly
+\State Select $a \in A$ using $\theta_{n_s}(Q,s)$ learning policy.
+\For{each step of $t$ epoch}
+\State Let  $r(s,a)$ be the reward obtained
+\State Let  $s'$ next state of the enviroment
+\State Select $a' \in A$ using $\theta_{n_{s'}}(Q,s')$ learning policy
+\State $Q(s,a)\leftarrow Q(s,a) + \alpha_m(s,a)[r+ \gamma Q(s',a') -Q(s,a)] $ 
+\State $s \leftarrow s'$
+\State $a \leftarrow a'$
+\EndFor
+\EndFor
+\State $\pi(s)=argmax_{a\in A}Q^*(s,a)$
+
+\Return $\pi$ 
+\end{algorithmic}
+\end{algorithm}
+
+
+
+
+
+This algorithm will present convergence conditions almost identical to Q-learning, although it also requires the learning policy to  be limiting greedy, that is, when taking a limit with respect to the number of times the algorithm has passed through $s$, it must meet:
+$$\forall s \in S \hspace{1mm} lim_{n\rightarrow \infty} \theta_n(Q,s)=argmax_{a \in A} Q(s,a).$$
+We will conclude this section by noting that as the dimensions of the problem increase, these algorithms will be computationally more efficient than those of dynamic programming, since it avoids the use of transition matrices and  inverses.
+
+\subsection{Temporal differences learning}
+
+
+So far, we have seen how to solve MDPs by dynamic programming, as well as using stochastic approximation algorithms to overcome the modeling curse in the case where we do not know explicitly the enviroment of our problem or where it is too computationally expensive to use the transition matrices.
+
+
+
+
+
+However, we can still run into another difficulty. If our MDP turns out to have a huge number of possible states or actions, stochastic approximation methods such as Q learning or SARSA will become too computationally expensive and will fail. This phenomenon is known as the curse of dimensionality. . To overcome this type of problems, temporal difference (TD) learning methods have been  used as a tool for resolving MDPs.
+
+
+
+In the following sections we will consolidate the basic concepts of TD learning and we will present its use in a widely recognised  decision taking problem \cite{tesauro1994td}, unsolvable by the previously presented methods due to the high dimensionality of the problem.
+
+
+
+
+The temporal difference (TD) method represents a branch of Machine Learning used for so called multi-step problems. In these problems, a series of events or 'steps' take place (with a time order) until reaching the point where the result we sought to predict is obtained. The TD model will compare the predictions in one step with the next and thus correct their predictions successively. A classic example to visualize this type of problem is Sutton's 'weatherman problem'  \cite{sutton1988learning}  where a meteorologist tries to predict the weather on Sunday throughout the week.
+
+
+
+ Until the mid-1980s and early 2000s, these types of problems were solved using supervised learning. Going back to the 'weatherman problem', the supervised approach to this problem would be to generate a series of pairs prediction-result ('(Monday,Sunday)', '(Tuesday, Sunday)'... ) , and adjust the predictions by some sort  of regression. Despite obtaining partially satisfactory results, Sutton and Barto, among others\cite{sutton1988learning} \cite{sutton1992gain} \cite{sutton1992reinforcement},  showed that alternative learning methods were computationally more efficient and even learned faster, that is, they converged faster to better results than the supervised approach.
+
+
+
+
+Next, we will introduce the TD methods following the approach used by Sutton \cite{sutton1988learning}, and we will state the  theorem that guarantees the convergence of this method for some particular conditions. Although the conditions are certainly very restrictive, this was the first theorem to prove a convergence for TD methods. This result allowed  to consolidate the intuition that these methods effectively solved learning problems.
+
+
+\subsubsection{TD introduction and Sutton's theorem} \hspace{3mm}
+
+
+
+
+
+ We will start by introducing a multi-step problem. These problems consist of sequences of elements $x_1$,
+ $x_2$, .... , $x_t$, $z$ where each of the values $x$ represents the temporally ordered steps of the sequence, and $z$ represents the result obtained at the end of it.For this type of problems we will normally get a considerable number of sequences. Each element of a sequence will be associated with a prediction $P_t=P(x_t,w)$ of the corresponding $z$, dependent on the event $x_t$ and some weights $w$, common in all the predictions. The learning goal is for the $P_t$  to 
+ reasonable predict the value of $z$ (more formally $\mathbb{E}[z \hspace{1mm}| \hspace{1mm} x_t])$ at the end of  all the sequence.
+
+
+ The predictor function $P$ can be anything from a linear function to a deep neural network. Therefore, the learning will consist of updating the weights $w$ through increments $\Delta w_t$. Normally they will be applied at the end of each sequence, as indicated by the following expression:
+\begin{equation}
+    w \longleftarrow w+ \sum_{t=1}^{m}\Delta w_t.
+\end{equation}
+
+
+
+ If we take the supervised learning approach, we can state the problem as a series of state-end of sequence pairs $(x_1,z)$,....,$(x_t,z)$, noting that with this representation we have omitted the succeeding character of the sequence. In this approach, the increments or updates of $w$ are formulated in the backpropagation way, first presented by Rumelhart \cite{rumelhart1985learning} 
+\begin{equation}
+    \Delta w_t =\alpha(z-P_t)\nabla_w P_t,
+\end{equation}
+
+where $\alpha$ represents a coefficient of variation and $\nabla_w P_t$ is the gradient of the function $P_{w}(x)=P(x,w)$ evaluated at $x_t$.
+
+
+Therefore, we can rewrite the update of $w$ for each sequence as
+\begin{equation}
+ w \longleftarrow \sum_{t=1}^{m}\alpha(z-P_t)\nabla_w P_t.
+\end{equation}
+
+Moreover, if we rewrite \hspace{1mm}  $z-P_1=\sum_{t=1}^{m}(P_{t+1}-P_{t})$ \hspace{1mm}  where  \hspace{1mm} $P_{m+1}=z$ we end up getting the following expression for $\Delta w_t$:
+\begin{equation}
+    \Delta w_t= \alpha (P_{t+1}-P_{t}) \sum_{k=1}^{t} \nabla_w P_k.
+\end{equation}
+
+
+This way of computing the increments is much more time and storing efficient than the previous one. We remind the reader that if we have a series of ordered sequences, and we are traversing it to update the $w$, for each sequence it is needed to compute $\sum_{t=1 }^{m} \Delta w_t$. Once this expression  is obtained, $w$ will be updated, the information stored to calculate the sum of increments 
+ deleted and  we will move on to the next sequence.
+
+
+In the first case (2.7), it will be needed to store the values of $P_t$ and $\nabla_w P_t$ for all the elements of the sequence, and only once we reach the end of said sequence will we be able to perform all the addition of increments. On the other hand, in the second way (2.9)  increments may be calculated and added step by step in the sequence, since for each $\Lambda w_t$ it is only necessary the sum of the previous gradients and the approximation of the next step. Therefore, we only need to store the sum of the above gradients $\sum_{k=1}^{t} \nabla_w P_k$ and the relevant approximation.
+
+
+
+The last case will be called TD(1), and it will be part of the family of TD methods. TD(1) updates the weights of $w$ in an identical  way to supervised learning, but in a  much more computationally efficient fashion. Given this, the TD methods are introduced as those methods that update the weights of $w$ in the way initially mentioned, but their increments are now the following :
+\begin{equation}
+    \Delta w_t= \alpha (P_{t+1}-P_{t}) \sum_{k=1}^{t} \lambda^{t-k} \nabla_w P_k  \hspace{4mm} where  \hspace{2mm} \lambda \in [0,1].
+\end{equation}
+
+As in the previous TD(1) case, we will be able to add the increments while traversing the sequence. Furthermore, it is only needed to store the weighted sum of the previous gradients and the relevant state, since it can be seen that
+$$\sum_{k=1}^{t+1} \lambda^{t-k} \nabla_w P_k= \nabla_w P_{t+1}+\lambda \sum_{k=1}^{t} \lambda^{t-k} \nabla_w P_k.$$
+
+  
+
+Finally, we will introduce the absorbing Markov chains concept, since in order to apply the convergence theorem that Sutton presented, the problem must be able to be rewritten as sequences of a chain of this type. An absorbing Markov chain is 
+ a Markov  chain where there exists at least one absorbing state, that is, a state that cannot be left.All states must be capable of reaching  an absorbing state in a finite number of steps. Consequently, if we are traversing the chain we will eventually reach one of these states and restart the chain.
+
+
+
+Moreover, for our particular problem, when we reach each of the absorbing states we will receive a reward $z$ that will only depend on said state. Essentially, we require the multi-state problem to have no memory. Let us now continue and end the section with the statement of the theorem.
+
+\begin{theorem}
+
+
+Let be a stationary and absorbing Markov chain, with any distribution of initial probabilities $\mu_i$, and  expected values of the rewards associated with each absorbing state $\hat{z}_j$, where  the states are represented as linearly independent vectors $\{ x_i \hspace{1mm}| \hspace{1mm}i\in S\}$.Then there exists  $\epsilon >0$ such that for all $\alpha<\epsilon$ the predictions of the method TD(0) where $P_w$ is a linear function converge on expected value to the ideal predictions. That is, $lim_{n\longrightarrow \infty} \mathbb{E}[P(x_i,w_n)] =\mathbb{E}[z \hspace{1mm} | \hspace{1mm}x_i] \hspace{2mm} \forall i \in S$, where $n$ is the number of sequences.
+\end{theorem}
+
+\subsection{The Tesauro's backgammon problem. Overcoming the curse of dimensionality}
+
+
+Backgammon is a classic board game where two players compete to remove all their pieces from the board before the rival. At each  turn, one of the players rolls two dice, and depending on the result is able to move his pieces in different ways. Note that the next state on the board only depends on the current state, so we are faced with a Markovian situation. If certain reasonable conditions are assumed and  the game is approached from the perspective of a single player we can consider maximizing game-play in backgammon as a MDP. Lets see how:
+
+
+Let the set of states  $S$ be all the possible combinations of distributions of pieces and dice that can exist in the game. Let the set of actions $A_s$ be all the possible moves that the player can make if he finds himself in the position $s$. To assume the existence of the probability distribution $P(s' \hspace{1mm}| \hspace{1mm} (s,a))$ is needed to supose that the player is going against a consistent player or group of players. That is to say, a player that for each distribution of pieces that he receives and each roll of the dice that he obtains will always make the same movement (or set of movements, if we want to further complicate the problem). Finally, the rewards will be 0 for any pair $(s,a)$ where both players continue to have chips on the board, 1 if only the rival has chips, and -1 when the opponent has no chips. Note that for these last two cases $P(0 \hspace{1mm}| \hspace{1mm} (s,a))=1$ ,that is, the game is restarted and the next state is the starting position.
+
+
+
+Given that  despite the fact that the rival player is consistent we do not know his game strategy, the transition matrices are unknown and therefore we can only solve the problem using stochastic approximations. We have seen that this type of technique converges theoretically when infinite iterations of the algorithm go through each state-action value $Q(s,a)$ an infinite number of times. Therefore, in order to obtain reasonable results in practice, we need to iterate our algorithm enough  to reach each tuple a minimum of times. In this problem we have of the order of $10^{22}$ tuples, which rules out any possibility of using these techniques.In conclusion, new ways of approaching and solving the problem were needed.
+
+
+
+
+Therefore, to solve this problem, Tesauro tried new methods \cite{tesauro1992temporal} \cite{tesauro1994td} derived form TD  learning techniques, although he specified in \cite{tesauro1992temporal} that there was no theoretical framework that guaranteed good results of this method for this problem. To begin with,  the convergence results are postulated for prediction problems, when the problem as he  posed it is a decision or prediction-decision problem (we can conclude the latter considering that if the player is able to predict the chances of winning in each position, he can always choose advantageous positions).
+
+
+
+On the other hand, the proof of convergence in the TD(0) methods requires that the states be represented as linearly independent vectors, an impossible task given that he had on the order of $10^{22}$ states. Furthermore, Tesauro used deep neural networks and not linear functions as $P$, and he was not limited only to TD(0), but worked with any value of $\lambda$.
+
+
+
+
+
+Despite all the arguments and warnings stated above, Tesauro tried to solve the problem with the following TD scheme: Let $X$  be the set of all possible distributions of tiles on the board, where the states were represented as $x\in M(\mathbb{R})_{28 \times 8}$. Let $P$ be the function that approximates the value of the outcome of the sequence for each $x$ and $z=1$ the outcome if the first player wins, while $z=0$ is obtained if the second player rises with victory.  To start the algorithm, the weights of the function $P(x_t,w)$  will be initialized in a random way. 
+
+
+ Let us note that by representing the states in a dependent way with a matrix structure that resembled the board, Tesauro sought that the algorithm could transfer the learning of some positions to other similar ones.This approach would avoid the collapse of the algorithm by not having to go through all the positions.
+
+
+Being already stated the variables in play, let the game begin. A sequence will originate at $x_0$, the starting position, and a dice roll corresponding to the first player's turn. He will move to the new position $x_1$ allowed by the dice that maximizes $P$, since this function is an approximation of the average value of $z$ at the end of the sequence, that is, the first player's chances of winning from that position. Now, the dice will be rolled and the second player will move, this time to the allowed position  ($x_2$) that minimizes $P$, that is, to the position that according to the TD approximation minimizes the first player's chances of winning. They will keep moving successively until a player wins (reaches an ending situation $x_t$). Once this occurs, the weights $w$  will be updated in a TD fashion (2.10) and a new game will start.
+
+
+The objective of Tesauro was to make an algorithm that learns to play Backgammon only by playing against itself, that is, a self-taught algorithm, capable of learning to compete in the game only with the rules and without any previous experience, contrary to all machine learning methods based on supervised learning.It was an attempt on taking the learning even further.
+
+
+
+The results achieved were phenomenal. The algorithm only playing against itself and without previous experience was able to reach an intermediate level of play, capable of beating any commercial supervised learning software trained with results from thousands of games. Furthermore, by introducing certain build in features to this algorithm, such as known game strategies for certain positions, it was able to bring its performance to that of a master, winning 13 games out of 31 games against the world champion.
+
+
+The resounding success of Tesauro opened the door to the application of TD methods to other complex decision-making problems, such as many other  MDPs of intractable dimensions.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\section{The Hidden Markov model}
+
+This section introduces hidden Markov models, an inexpensive and intuitive method for modeling stochastic processes. The following part presents the motivation behind the technique with a simple example, thus showing its usefulness in our day to day.
+
+The following sections explain the details of this approach following the development of the book by Rabiner \cite{rabiner1989tutorial}. First, Hidden Markov models will be presented as theoretical entities, and it will be shown how the state of a model can be estimated from the model definition and a history of observations, as well as how a model can be estimated from some observations. Second, the implementation of an HMM will be described, including an optimization into a sequence of simple operations to make it computationally efficient. Finally, some of its applications will be shown, such as speech recognition (including Siri) or the analysis of biological sequences, particularly DNA.
+
+\subsection{A simple example}
+
+Imagine that we have a friend who lives far away and with whom we talk daily on the phone about what he did during the day. Our friend is interested in three activities: walking around the square, go shopping and cleaning his apartment. The activities that our friend is going to do depend on the weather.
+
+To simplify the problem we are going to consider only two kinds of weathers, "rainy" and "sunny". Suppose that, by the number of times we have gone to visit him, the probability that a rainy day follows a rainy day is $0.7$, and the probability that a sunny day follows a sunny day is $0.6$. If we assume that these probabilities continue to hold, this information can be written as
+\begin{table}[H]
+\begin{tabular}{lll}
+                       & $R$                        & $S$                        \\ \cline{2-3} 
+\multicolumn{1}{l|}{$R$} & \multicolumn{1}{l|}{$0.7$} & \multicolumn{1}{l|}{$0.3$} \\ \cline{2-3} 
+\multicolumn{1}{l|}{$S$} & \multicolumn{1}{l|}{$0.4$} & \multicolumn{1}{l|}{$0.6$} \\ \cline{2-3} 
+\end{tabular}
+\caption{\label{table:RS}}
+\end{table}
+where $R$ is "rainy" and $S$ is "sunny".
+
+As we have said before, the activities that our friend is going to do depend on the weather. Suppose that this relationship is given by
+\begin{table}[H]
+\begin{tabular}{llll}
+                       & Walk                        & Shop                        & Clean                        \\ \cline{2-4} 
+\multicolumn{1}{l|}{$R$} & \multicolumn{1}{l|}{$0.1$} & \multicolumn{1}{l|}{$0.4$} & \multicolumn{1}{l|}{$0.5$} \\ \cline{2-4} 
+\multicolumn{1}{l|}{$S$} & \multicolumn{1}{l|}{$0.7$} & \multicolumn{1}{l|}{$0.2$} & \multicolumn{1}{l|}{$0.1$} \\ \cline{2-4} 
+\end{tabular}
+\caption{\label{table:WSC}}
+\end{table}
+where, for example, $0.1$ is the probability that on a rainy day our friend will walk.\\
+
+For this model, if we consider the \emph{state} as the weather of the day, it is a \emph{Markov process}, since the next state depends only on the current state, however, these states are "hidden" since we can’t observe the weather of the day.
+
+However, we can observe what activity our friend does every day. Thus, by Table \ref{table:WSC}, these data give us probabilistic information about the weather.
+
+Since the states are hidden, this type of model is known as a \emph{Hidden Markov model} (HMM). Our goal is to make use of the observable information, in this case the activities that our friend does, to obtain information about the Markov process.\\
+
+In this way we are going to present the \emph{discrete Hidden Markov model} of this example. For this we have the \emph{set of states} given by $Q = \{R, S\}$, and the \emph{set of possible observations} given by $V = \{0, 1, 2\}$, where $0$ represents "walk", $1$ represents "shop" and $2$ represents "clean".
+
+By Table \ref{table:RS}, the \emph{transition probability matrix} is given by
+\begin{equation}\label{matrixA}
+A = 
+\begin{bmatrix}
+0.7 & 0.3\\
+0.4 & 0.6
+\end{bmatrix},
+\end{equation}
+
+and by Table \ref{table:WSC}, the \emph{observation probability matrix} is given by
+\begin{equation}\label{matrixB}
+B = 
+\begin{bmatrix}
+0.1 & 0.4 & 0.5\\
+0.7 & 0.2 & 0.1
+\end{bmatrix}.
+\end{equation}
+
+In this example we are going to assume that the probability that the initial day will be a rainy day is $0.6$, while the probability that it will be a sunny day is $0.4$. Thus, we have the \emph{initial state distribution} as
+\begin{equation}\label{matrixPi}
+\pi = 
+\begin{bmatrix}
+0.6 & 0.4
+\end{bmatrix}.
+\end{equation}
+
+As we can see, these three matrices $(\pi, A, B)$ are stochastic by rows, that is, each row is a probability distribution.
+
+Now let us consider a period of four days that we want to study, for which the sequence of activities $(W, S, W, C)$ has been observed, therefore the \emph{sequence of observations} is given by
+\begin{equation}\label{observations1}
+\OO = (0,1,0,2).
+\end{equation}
+
+Given this model, we can question whether we could know the most probable weathers during the four-days period of interest, that is, whether we could determine the state sequence that maximizes the expected number of correct states given the observations \ref{observations1} (\emph{HMM probabilities}).
+
+In the following sections, we will explain in detail the Hidden Markov model, as well as its notation. Then we will present the three fundamental problems, solving these and giving some efficient algorithms. (…)
+
+
+\subsection{Formal definition of a Hidden Markov model}
+
+A \emph{Hidden Markov model} (HMM) is a statistical model in which it is assumed that the system to be modeled is a Markov process with unknown parameters ("hidden"). The objective is to determine the unobservable parameters of said chain from the observable parameters.
+
+The HMM can perfectly be continuous, however, in this section we will be assumed to be \emph{discrete}. To see the continuous HMM we recommend reading \cite{petrushin2000hidden}.
+
+\begin{definition}
+A common notation for an HMM is the representation as a tuple $(Q, V, \pi, A, B, \OO)$ where
+\begin{itemize}
+\item $Q$ is the set of states of the Markov process,
+
+$Q = \{ q_{0}, q_{1}, \dots, q_{N-1} \}$ where $N$ is the number of states in the model.
+
+\item $V$ is the set of possible observations ,
+
+$V = \{ 0, 1, \dots, M-1 \}$ where $M$ is the number of observations symbols.
+
+\item $\pi$ is the initial state distribution,
+
+$\pi = \{ \pi_{i} \}$ where $\pi_{i}$ is the probability that the first state is state $q_{i}$.
+
+\item $A$ is the transition probability matrix of dimension $N \times N$,
+
+$A = \{ a_{i,j} \}$ with $a_{i,j} = \PP(\text{state  } q_{j} \text{ at } t+1 | \text{state } q_{i} \text{ at } t)$.
+
+\item $B$ is the observation probability matrix of dimension $N \times M$,
+
+$B = \{ b_{j,k} \} =  \{ b_{j}(k) \}$ with $b_{j}(k) = \PP(\text{observation  } k \text{ at } t | \text{state } q_{j} \text{ at } t)$.
+
+\item $\OO$ is the observation sequence,
+
+$\OO = ( \OO_{0}, \OO_{1}, \dots, \OO_{T-1} )$ where $T$ the length of the observation sequence.
+\end{itemize}
+
+The HMM is denoted by $\lambda = (A,B,\pi)$.
+\end{definition}
+
+A generic hidden Markov model is shown in Figure \ref{figure:HMM}, where $\{X_{i}\}$ represents the hidden state sequence and all other notations are as above. The Markov process, which is hidden above the dashed line, is determined by the current state $X_{0}$ and matrix $A$. We can only observe the $O_{i}$, which are related to the states of the Markov process hidden by matrix $B$.
+\begin{figure}[H]
+\centering
+\includegraphics[scale=0.3]{imagesHMM/Hidden Markov Model.PNG}
+\caption{Hidden Markov model.\label{figure:HMM}}
+\end{figure}
+
+For our example, we have $N = 2$, $M = 3$ and $T = 4$. In this case, $A$, $B$, $\pi$ and $\OO$ are given by \ref{matrixA}, \ref{matrixB}, \ref{matrixPi} and \ref{observations1}, respectively.
+
+So let's consider a generic state sequence of length four
+\[X = (X_{0}, X_{1}, X_{2}, X_{3})\]
+with corresponding observations
+\[\OO = ( \OO_{0}, \OO_{1}, \OO_{2}, \OO_{3}).\]
+
+We know that $\pi_{X_{0}}$ is the probability of starting in state $X_{0}$, that $b_{X_{0}}(\OO_{0})$ is the probability of starting observing $\OO_{0}$ given the state $X_{0}$, and that $a_{X_{0}, X_{1}}$ is the probability of transiting from state $X_{0}$ to state $X_{1}$. Continuing, we see that the probability of the state sequence $X$ is given by
+\begin{equation}\label{P(X,O) ejemplo}
+\PP(X,\OO) = \pi_{X_{0}} b_{X_{0}}(\OO_{0}) a_{X_{0}, X_{1}} b_{X_{1}}(\OO_{1}) a_{X_{1}, X_{2}} b_{X_{2}}(\OO_{2}) a_{X_{2}, X_{3}} b_{X_{3}}(\OO_{3}).
+\end{equation}
+
+Continuing with the example with observation sequence $\OO = (0, 1, 0, 2)$, if we consider the sequence of states $X = (R, S, S, R)$, using (7) we have
+\[\PP((R,S,S,R),(0,1,0,2)) = 0.6 (0.1) (0.3) (0.2) (0.6) (0.7) (0.4) (0.5) = 0.000302.\]
+
+In this way, we can calculate the probabilities of all sequences of states. We have listed these results in Table \ref{figure:Probabilidades1 Ejemplo1}, where the normalized probabilities have also been calculated (the sum is equal to $1$)
+\begin{figure}[H]
+\centering
+\includegraphics[scale=0.42]{imagesHMM/Probabilidades1_ Ejemplo1.PNG}
+\caption{State sequence probabilities.\label{figure:Probabilidades1 Ejemplo1}}
+\end{figure}
+
+It can be seen that the sequence with the highest probability is $SSSR$, but this is the optimal sequence in the dynamic programming sense (explained in the previous section), not in the HMM sense. To find the optimal sequence in the HMM sense, we choose the most probable symbol at each position. To this end we sum the probabilities in Table 1 that have an $R$ in the first position. Doing so, we find the normalized probability of $R$ in the first position is $0.18817$ and hence the probability of $S$ in the first position is $0.81183$. The HMM therefore chooses the first element of the optimal sequence to be $S$. We repeat this for each element of the sequence, obtaining the probabilities in Table \ref{figure:Probabilidades2 Ejemplo1}.
+\begin{figure}[H]
+\centering
+\includegraphics[scale=0.42]{imagesHMM/Probabilidades2_ Ejemplo1.PNG}
+\caption{HMM probabilities.\label{figure:Probabilidades2 Ejemplo1}}
+\end{figure}
+
+As we can see, the optimal sequence in the HMM sense of this example is $SRSR$, which does not match the sequence with the highest probability, but with the sequence of states that maximizes the expected number of correct states given the observations \ref{observations1}.
+
+
+\subsection{The three problems}
+
+\begin{problem}\label{Problem 1}
+    Given the model $\lambda = (A, B, \pi)$ and a sequence of observations $\OO$, find $\PP(\OO|\lambda)$. Here, we want to determine a score for the observed sequence $\OO$ with respect to the given model $\lambda$.
+\end{problem}
+
+\begin{solution}
+Let $\lambda = (A,B,\pi)$ be a HMM and let $\OO = (\OO_{0}, \OO_{1}, \dots, \OO_{T-1})$ be a observation sequence.
+
+Let $X = (X_{0}, X_{1}, \dots, X_{T-1})$ be a state sequence. Then by definition of $B$ we have
+\begin{equation}\label{P(O|X,l)}
+    \PP(\OO|X,\lambda) = b_{X_{0}}(\OO_{0}) b_{X_{1}}(\OO_{1}) \cdots b_{X_{T-1}}(\OO_{T-1})
+\end{equation}
+and by the definition of $\pi$ and $A$ it follows that
+\begin{equation}\label{P(X|l)}
+    \PP(X|\lambda) = \pi_{X_{0}} a_{X_{0}, X_{1}} a_{X_{1}, X_{2}} \cdots a_{X_{T-2}, X_{T-1}}.
+\end{equation}
+Since \[\PP(\OO,X|\lambda) = \frac{\PP(\OO \cap X \cap \lambda)}{\PP(\lambda)}\] then
+\[\PP(\OO,X|\lambda) = \frac{\PP(\OO \cap X \cap \lambda)}{\PP(\lambda)} \cdot \frac{\PP(X \cap \lambda)}{\PP(X \cap \lambda)}\]
+\[= \frac{\PP(\OO \cap X \cap \lambda)}{\PP(X \cap \lambda)} \cdot \frac{\PP(X \cap \lambda)}{\PP(\lambda)} = \PP(\OO|X,\lambda) \cdot \PP(X|\lambda).\]
+
+Thus, by \ref{P(O|X,l)} and by \ref{P(X|l)} we obtain
+\[\PP(\OO|\lambda) = \sum_{X}\PP(\OO,X|\lambda) = \sum_{X}\PP(\OO|X,\lambda) \cdot \PP(X|\lambda)\]
+\begin{equation}\label{P(O|l)}
+= \sum_{X} \pi_{X_{0}} b_{X_{0}}(\OO_{0}) a_{X_{0}, X_{1}} b_{X_{1}}(\OO_{1}) a_{X_{1}, X_{2}} \cdots a_{X_{T-2}, X_{T-1}} b_{X_{T-1}}(\OO_{T-1}).
+\end{equation}
+\end{solution}
+
+Calculation of $\PP(\OO|\lambda)$ as shown is impractical, since $2TN^{T}-1$ operations are required. This means that for a model with only $10$ states and $10$ observations, $10^{11}$ operations are needed. To reduce this complexity, some algorithms such as forward algorithm or backward algorithm are used which we are going to show below.
+
+\begin{algorithm2}[\emph{Forward algorithm (}$\alpha$\emph{-pass)}]\label{a-pass algorithm}
+\normalfont For $t = 0,1, \dots, T-1$ and $i = 0,1, \dots N-1$, define
+\begin{equation}\label{a-pass}
+    \alpha_{t}(i) = \PP(\OO_{0}, \OO_{1}, \dots, \OO_{t}, X_{t} = q_{i} | \lambda).
+\end{equation}
+Given the model $\lambda$, $\alpha_{t}(i)$, also called \emph{forward probability}, is the probability of observing $\OO_{0}, \OO_{1}, \dots, \OO_{t}$ and be in the state $q_{i}$ at time $t$.
+
+For the forward calculation of the probability of a sequence of observations, $\alpha_{t}(i)$ can be computed recursively as follows.
+\begin{enumerate}
+    \item Initialization:
+
+    Let $\alpha_{0}(i) = \pi_{i} b_{i}(\OO_{0})$, for $i = 0,1, \dots N-1$.
+
+    \item Recurrence:
+
+    For $t = 1, \dots, T-1$ and $i = 0,1, \dots N-1$, compute
+    \[\alpha_{t}(i) = \left[ \sum_{j=0}^{N-1}a_{ij} \alpha_{t-1}(j) \right] b_{i}(\OO_{t}).\]
+
+    \item Termination:
+
+    For \ref{P(O|l)} and \ref{a-pass} it's enough to calculate
+    \[\PP(\OO|\lambda) = \sum_{i=0}^{N-1}\alpha_{T-1}(i).\]
+\end{enumerate}
+\end{algorithm2}
+
+
+\begin{algorithm2}[\emph{Backward algorithm (}$\beta$\emph{-pass)}]\label{b-pass algorithm}
+\normalfont For $t = 0,1, \dots, T-1$ and $i = 0,1, \dots N-1$, define
+\begin{equation}\label{b-pass}
+    \beta_{t}(i) = \PP(\OO_{t+1}, \OO_{t+2}, \dots, \OO_{T-1}, X_{t} = q_{i} | \lambda).
+\end{equation}
+Given the model $\lambda$, $\beta_{t}(i)$, also called \emph{backward probability}, is the probability of observing $\OO_{t+1}, \OO_{t+2}, \dots, \OO_{T-1}$ (from time instant $t+1$ to the end) and be in the state $q_{i}$ at time $t$.
+
+For the backward calculation of the probability of a sequence of observations, $\beta_{t}(i)$ can be computed recursively as follows.
+\begin{enumerate}
+    \item Initialization:
+
+    Let $\beta_{T-1}(i) = 1$, for $i = 0,1, \dots N-1$.
+
+    \item Recurrence:
+
+    For $t = T-2,T-3, \dots, 0$ and $i = 0,1, \dots N-1$, compute
+    \[\beta_{t}(i) = \sum_{j=0}^{N-1}a_{ij} \beta_{t+1}(j)  b_{j}(\OO_{t+1}).\]
+
+    \item Termination:
+
+    For \ref{P(O|l)} and \ref{b-pass} it's enough to calculate
+    \[\PP(\OO|\lambda) = \sum_{i=0}^{N-1}\beta_{0}(i) \pi_{i} b_{i}(\OO_{0}).\]
+\end{enumerate}
+\end{algorithm2}
+
+The following schemes shows the states and probabilities necessary to calculate $\alpha_{4}(3)$ and $\beta_{b}(3)$ for a model with $5$ states and a sequence of observations of length $5$.
+\begin{figure}[H]
+\centering
+\begin{subfigure}[b]{0.45\linewidth}
+\includegraphics[scale=0.5]{imagesHMM/a-pass.png}
+\caption{Calculation of $\alpha_{4}(3)$}
+\label{fig:calculation a}
+\end{subfigure}
+\hfill
+\begin{subfigure}[b]{0.45\linewidth}
+\includegraphics[scale=0.5]{imagesHMM/b-pass.png}
+\caption{Calculation of $\beta_{b}(3)$}
+\label{fig:calculation b}
+\end{subfigure}
+\end{figure}
+
+
+Both forward algorithm and backward algorithm require on the order of $N^{2}T$ operations, much less than the $2TN^{T}-1$ operations that are necessary if $\PP(\OO,X|\lambda)$ is calculated for all possible states sequences $X$ of the model.
+
+
+\begin{problem}\label{Problem 2}
+    Given $\lambda = (A, B, \pi)$ and an observation sequence $\OO$, find an optimal state sequence for the underlying Markov process. In other words, we want to uncover the hidden part of the Hidden Markov Model. This type of problem is discussed in some detail in the example, above.
+\end{problem}
+
+\begin{solution}
+Given $\lambda = (A, B, \pi)$ and an observation sequence $\OO$, the optimal state sequence for the underlying Markov process is given by
+\[\underset{X}{\argmax} \PP(X|\OO,\lambda) = \underset{X}{\argmax} \PP(X|\OO) \PP(\lambda) = \underset{X}{\argmax} \frac{\PP(X,\OO)}{\PP(\OO)} \PP(\lambda)\]
+and since $\OO$ is fixed
+\begin{equation}\label{P(X,O,l)}
+\underset{X}{\argmax} \PP(X|\OO,\lambda) = \underset{X}{\argmax} \PP(X,\OO) \PP(\lambda) = \underset{X}{\argmax} \PP(X,\OO,\lambda).
+\end{equation}
+\end{solution}
+
+This task requires finding a maximum over all possible state sequences, and can be solved efficiently by the Viterbi algorithm.
+
+\begin{algorithm2}[\emph{Viterbi algorithm}]\label{Viterbi algorithm}
+\normalfont For $t = 0,1, \dots, T-1$ and $j = 0,1, \dots N-1$, define
+\begin{equation}\label{delta}
+    \delta_{t}(j) = \underset{X_{0}, \dots, X_{t}}{max\,} \PP(X_{0}, X_{1}, \dots, X_{t} = q_{j}, \OO_{0}, \OO_{1}, \dots, \OO_{t}, \lambda)
+\end{equation}
+and
+\begin{equation}\label{varphi}
+    \varphi_{t}(j) = \underset{X_{t}}{\argmax} \PP(X_{0}, X_{1}, \dots, X_{t} = q_{j}, \OO_{0}, \OO_{1}, \dots, \OO_{t}, \lambda).
+\end{equation}
+Given the model $\lambda$ and an observation sequence $\OO$, $\delta_{t}(j)$ is highest probability of any sequence reaching state $q_{j}$ at time $t$ after emitting $\OO_{0}, \OO_{1}, \dots, \OO_{t}$, and $\varphi_{t}(j)$ is the last state ($X_{t}$) in highest probability sequence reaching state $q_{j}$ at time $t$ after emitting $\OO_{0}, \OO_{1}, \dots, \OO_{t}$.
+
+For the Viterbi calculation, we will calculate the best sequence with the same recursive approach as in forward and backward algorithms (algorithms \ref{a-pass algorithm} and \ref{b-pass algorithm}).
+
+\begin{enumerate}
+    \item Initialization:
+
+    For $j = 0,1, \dots N-1$, let
+    \[\delta_{0}(j) = \pi_{j} b_{j}(\OO_{0})\] and \[\varphi_{0}(j) = 0.\]
+
+    \item Recurrence:
+
+    For $t = 1, \dots, T-1$ and $j = 0,1, \dots N-1$, compute
+    \[\delta_{t}(j) = \underset{0 \leq i \leq N-1}{max\,} \delta_{t-1}(i) a_{ij} b_{j}(\OO_{t})\]
+    and
+    \[\varphi_{t}(j) = \underset{0 \leq i \leq N-1}{\argmax} \delta_{t-1}(i) a_{ij}.\]
+
+    \item Termination:
+
+    First, compute the optimal last state 
+    \[\hat{X}_{T-1} = \underset{0 \leq i \leq N-1}{\argmax} \delta_{T-1}(i).\]
+    Then, for $t = 0, \dots, T-2$, compute
+    \[\hat{X}_{t} = \varphi_{t+1}(\hat{X}_{t+1}),\]
+    where $\hat{X} = \{\hat{X}_{t}\}$ is the optimal state sequence in the HMM sense.
+
+    Finally, compute this probability
+    \[P(\hat{X}) = \underset{0 \leq i \leq N-1}{max\,} \delta_{T-1}(i).\]
+\end{enumerate}
+\end{algorithm2}
+
+The following scheme shows an example of the most probable states sequence for a model with $5$ states and a sequence of observations of length $5$.
+\begin{figure}[H]
+\centering
+\includegraphics[scale=0.6]{imagesHMM/Viterbi algorithm.png}
+\caption{Example of the most probable states sequence}
+\label{fig:example Viterbi}
+\end{figure}
+
+This algorithm require on the order of $N^{2}T$ operations, same as forward and backward algorithms.
+
+In practice, many times this algorithm is used in \emph{log-space}. That is because in the models, usually, the number of observations is very large, therefore, the individual probabilities are very small, that is, the products of such probabilities will be very very very small. In such cases, our machines may run out of precision, hence yielding unreliable computations. Working in the log-space is a common “trick” that solves the problem.
+
+
+\begin{problem}\label{Problem 3}
+    Given an observation sequence $\OO$ and the dimensions $N$ and $M$, find the model $\lambda = (A, B, \pi)$ that maximizes the probability of $\OO$. This can be viewed as training a model to best fit the observed data.
+\end{problem}
+
+Mathematically, this problem can be written as
+\[\max_{\lambda}\hspace{2mm} \PP(\OO| \lambda)\]
+\[\text{s.t.}\hspace{2mm} \OO, N, M.\]
+
+
+Unfortunately, it is not possible to find such a model analytically and therefore an iterative algorithm such as Baum and Welch's is necessary, which allows estimating the parameters of a model that maximize the probability of an observations sequence.
+
+
+\begin{algorithm2}[\emph{Baum and Welch algorithm}]\label{Baum and Welch algorithm}
+\normalfont For $t = 0,1, \dots, T-2$ and $i, j \in \{0,1, \dots N-1\}$, define
+\begin{equation}\label{gamma}
+    \gamma_{t}(i) = \PP(X_{t} = q_{i} | \OO, \lambda) = \frac{\PP(X_{t} = q_{i}, \OO, \lambda)}{\PP(\OO, \lambda)} = \frac{\alpha_{t}(i) \beta_{t}(i)}{\displaystyle\sum_{k=0}^{N-1} \alpha_{t}(k) \beta_{t}(k)}
+\end{equation}
+and \[\xi_{t}(i,j) = \PP(X_{t} = q_{i}, X_{t+1} = q_{j} | \OO, \lambda) = \frac{\PP(X_{t} = q_{i}, X_{t+1} = q_{j}, \OO, \lambda)}{\PP(\OO, \lambda)}\]
+\begin{equation}\label{xi}
+     = \frac{\alpha_{t}(i) a_{ij} b_{j}(\OO_{t+1}) \beta_{t+1}(j)}{\displaystyle\sum_{k=0}^{N-1} \alpha_{t}(k) \beta_{t}(k)}.
+\end{equation}
+where $\alpha_{t}(i)$ is the forward probability, \ref{a-pass}, and $\beta_{t}(i)$ is the backward probability, \ref{b-pass}.
+
+Given the observation sequence $\OO$ and the dimensions $N$ and $M$, $\gamma_{t}(i)$ is the probability of being at state $q_{i}$ at time $t$, and $\xi_{t}(i,j)$ is the probability of moving from state $q_{i}$ at time $t$ to state $q_{j}$ at time $t+1$. Note that
+\begin{equation}\label{gamma xi}
+     \gamma_{t}(i) = \sum_{j=0}^{N-1} \xi_{t}(i,j).
+\end{equation}
+
+Re-estimation is an iterative process. First, we initialize $\lambda = (A,B, \pi)$ with a best guess or, if no reasonable guess is available, we choose random values such that $\pi_{i} \approx \frac{1}{N}$ and $a_{ij} \approx \frac{1}{N}$ and $b_{j}(k) \approx \frac{1}{M}$. It's critical that $\pi$, $A$ and $B$ be randomized, since exactly uniform values will result in a local maximum from which the model cannot climb. As always, $\pi$, $A$ and $B$ must be row stochastic.
+
+The solution to Problem \ref{Problem 3} can be summarized as follows.
+
+\begin{enumerate}
+    \item Initialization:
+
+    For $j = 0,1, \dots N-1$, let
+    \[\delta_{0}(j) = \pi_{j} b_{j}(\OO_{0})\] and \[\varphi_{0}(j) = 0.\]
+
+    \item Recurrence:
+
+    For $i,j \in \{0,1, \dots N-1\}$ and $j = 0,1,\dots,M-1$, compute 
+    \begin{equation}\label{pi BW}
+    \hat{\pi}_{i} = {\text{Expected frequency in} \atop \text{state $q_{i}$ at time $t=0$}} = \gamma_{0}(i),
+    \end{equation}
+    \begin{equation}\label{a BW}
+    \hat{a}_{i,j} = \frac{{\text{Expected number of} \atop \text{transitions from $q_{i}$ to $q_{j}$}}}{{\text{Expected number of} \atop \text{transitions from $q_{i}$}}} = \frac{\displaystyle\sum_{t=0}^{T-2} \xi_{t}(i,j)}{\displaystyle\sum_{t=0}^{T-2} \gamma_{t}(i)}
+    \end{equation}
+    and
+    \begin{equation}\label{b BW}
+    \hat{b}_{j,k} = \frac{{\text{Expected number of} \atop \text{emissions of $k$ from $q_{j}$}}}{{\text{Expected number} \atop \text{of visits to $q_{j}$}}} = \frac{\displaystyle\sum_{{\{t: 0 \leq t \leq T-1, \atop \OO_{t} = k\}}} \gamma_{t}(j)}{\displaystyle\sum_{t=0}^{T-1} \gamma_{t}(j)}.
+    \end{equation}
+
+    \item Termination:
+
+    Re-estimate the model $\lambda = (A,B,\pi)$ with the $\hat{\pi}_{i}$, $\hat{a}_{i,j}$ and $\hat{b}_{j,k}$ calculated in step (2). Then, calculate $\PP(\OO| \lambda)$ with the forward or backward algorithm (algorithms \ref{a-pass algorithm} and \ref{b-pass algorithm}). If this value increases, go to step (1), and if not, the iteration has finished.
+
+    In practice, a threshold and/or a maximum number of iterations is set, and if $\PP(\OO| \lambda)$ does not increase by at least that threshold and/or reaches that maximum number of iterations, the iteration stops.
+\end{enumerate}
+\end{algorithm2}
+
+The following scheme shows a partial diagram of the elements necessary for the calculation of $\xi_{3}(2,4)$ for a model with $5$ states and a sequence of observations of length $5$.
+\begin{figure}[H]
+\centering
+\includegraphics[scale=0.6]{imagesHMM/Baum-Welch algorithm.png}
+\caption{Calculation of $\xi_{3}(2,4)$}
+\label{fig:example BW}
+\end{figure}
+
+This algorithm is the most used to solve this problem, although does not guarantee a global maximum, but a local maximum.
+
+
+\subsection{Applications of Hidden Markov models}
+
+Unfortunately, a comprehensive book devoted to Hidden Markov models does not yet exist. There are, however, several books intended for a reader with a specific background. The most famous areas of HMM application are speech recognition and bioinformatics, and books devoted to these research areas often have chapters covering HMM. It is interesting to note that speech recognition uses continuous HMMs, but bioinformatics uses discrete HMMs for gene recognition and representation of protein families.
+
+Consider the problem of speech recognition (which just happens to be one of the best-known applications of HMMs). We can use the solution to Problem \ref{Problem 3} to train an HMM, say, $\lambda_{0}$ to recognize the spoken word "no" and train another HMM, say, $\lambda_{1}$ to recognize the spoken word "yes". Then given an unknown spoken word, we can use the solution to Problem \ref{Problem 1} to score this word against $\lambda_{0}$ and also against $\lambda_{1}$ to determine whether it is more likely "no", "yes", or neither. In this case, we don't need to solve Problem \ref{Problem 2}, but it is possible that such a solution (which uncovers the hidden states) might provide additional insight into the underlying speech model. To know this application in detail we recommend the book by Rabiner \cite{rabiner1989tutorial}.
+
+Now, if we consider the problem of gene recognition, We can use the solution to Problem \ref{Problem 3} to train the HMM model given some observations of genes of a similar species so that it can capture the characteristics of the genes of the same species to maximize the chances of detecting the genes of the studied species. After the model is trained, each of the genes found in the genome must be evaluated and their probability calculated (Problem \ref{Problem 1}). With said probability and the gene, post-processing is applied in order to eliminate those genes that, according to the knowledge of the model, are not possible genes. To know this application in detail we recommend the article \cite{stanke2003gene}.
+
+To finish this section, we show you other of the many applications that HMMs have, as well as some articles that show these applications:
+
+\begin{itemize}
+    \item Speech synthesis, \cite{tokuda2013speech}.
+    \item Machine translation, \cite{morwal2012named}.
+    \item Cryptanalysis, \cite{karlof2003hidden}.
+    \item Neuroscience, \cite{florian2011hidden}.
+    \item Computational finance, \cite{mamon2007hidden}.
+\end{itemize}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+
+\section{Random walks}
+The random walk can be defined in simple terms as a stochastic process with the property of being studied from individual steps given by a specific distribution. The random walks can perfectly be continuous, however, in this section they will be assumed to be discrete and therefore there will be $N$ discrete points where $N \geq 0$. The random walk can be derived from a specific Markov Chain as the following defintion states. 
+
+\begin{definition}[{A sequence of random variables $X_0, X_1, ... \subseteq \omega$ is a Markov chain with state space $\omega$ if for all possible states $x_{t+1}, x_t, \dots, x_1$} it is given]
+    \begin{equation} \label{0.01}
+        \begin{split}
+        \mathbb{P}[X_{t+1} = x_{t+1} | X_t = x_t \land X_{t-1} = x_{t-1} \land \cdots \land X_0 = x_0] = \mathbb{P}[X_{t+1} = x_{t+1} | X_t].
+    \end{split}
+    \end{equation}
+
+The markov chain would be refered as time-homogenous if the possibility is also independent of $t$. 
+\end{definition}
+
+So, given \ref{0.01}, we can define the random walk 
+ by stating that it will start at a point $X_0^d$ ---usually assumed to be $X_0^d = (0_1, \dots, 0_d)$--- and by definition $X \in \mathbb{Z}^d$. So, a random walk process $S_N$ will be defined as: 
+
+\begin{equation} \label{0.1}
+    S_N = X_0 + \cdots + X_N =  \left(\sum^0_{i=0} X_0^i, 
+ \dots , \sum^N_{i=0} X_N^i\right).
+\end{equation}
+
+The random walks have a specific distribution, in this case it will be assumed to be uniform, so if $\xi \sim \textbf{unif}\{-1, 1\}$ then:
+\begin{equation} \label{0.2}
+    \begin{split}
+        \forall i \geq 1, \forall N \geq 0, \forall d \in \mathbb{N}:  X_N^{i+1} = X_N^i + \xi^i \sim \textbf{unif}\{-1, 1\}.
+    \end{split}
+\end{equation}
+
+Note then that equation \ref{0.2} implies that if $X^0_0 = 0$ then:
+\begin{equation} \label{0.3}
+    \begin{split}
+        X^0_0 = 0 \implies \mathbb{P}(Z_0^1 = 1) = \mathbb{P}(Z_0^1 = -1) = \frac{1}{2}.
+    \end{split}
+\end{equation}
+
+Assumed now a random walk of one dimension, so $d = 1$, $N$ steps where $N \geq 0$, a random position $m \in \mathbb{Z}$ and where $m \leq N$, then what would be the probability that after $N$ steps $X_N = m$? Note the probability of each steps is uniform and independent. Furthermore, in each step $n$ either  $X_n > X_{n-1}$ or $X_{n} < X_{n-1}$ because, given the distribution defined in \ref{0.2} $X_n$ will either increase $1$ or reduce $1$ with respect to (w.r.t) $X_{n-1}$. So, given $N$ steps we know by definition there will be $n_1$ jumps in which $X_{n} < X_{n-1}$ and $n_2$ steps in which $X_{n} > X_{n-1}$ for any $n = 1, \dots, N$. Therefore, 
+\begin{equation} \label{0.4}
+    \begin{split}
+        N = n_1 + n_2 \iff n_1 = \frac{1}{2} (N + m) \iff n_2 = \frac{1}{2} (N - m).
+    \end{split}
+\end{equation}
+
+Note that by \ref{0.3} we can say that given a step $n$ and $q := \mathbb{P}(Z^{n+1} = -1)$ then the opposite probability $p := \mathbb{P}(Z^{n+1} = 1)$ add up $1$ so: 
+\begin{equation} \label{0.4}
+    \begin{split}
+        \mathbb{P}(Z^{n+1} = 1) , \mathbb{P}(Z^{n+1} = -1) \sim \textbf{unif}\{-1, 1\} \implies q + p = 1.
+    \end{split}
+\end{equation}
+
+Therefore if after every specific step the change to increase $1$ or reduce $-1$ w.r.t the last step is $p$ or $q$ respectively, then the accumulated probability of the path given by the increases and decreases after $n$ steps is given by $P^*$:  
+\begin{equation} \label{0.5}
+    \begin{split}
+         P^* = \prod_{i=1}^{n_1} p  \prod_{i=1}^{n_1} q = q^{\frac{1}{2}(N + m)} p^{\frac{1}{2}(N - m)}. 
+    \end{split}
+\end{equation}
+
+$\eta$ steps where $\eta \leq n$ the paths to the left and right change and therefore $P^*$ must be multiplied by the total amount of paths with $n1$ steps to the left and $n2$ steps to the right. This is related with the ways to combine $n_1$ things given a total of $N$ and similarly for $n_2$. As you might expect, this is clearly related with the $N$ choose $K$ problem. However, the amount of combinations the object can be ordered is reduced the more objects are chosen, so after one out of $N$ is chosen there will be $N - 1$ and so on \cite{lawler2010random}.  Consequently, the total amount of combinations given $n_1$ objects is $N(N-1)\cdots(N-n_1-1)$ and therefore the whole probability of being at point $m$ after $N$ steps ---answering therefore the initial question--- is given by: 
+\begin{equation} \label{0.6}
+    \begin{split}
+         \mathbb{P}(m | N) = \frac{N!}{\left(\frac{N + m}{2}\right)!\left(\frac{N - m}{2}\right)!} q^{\frac{1}{2}(N + m)} p^{\frac{1}{2}(N - m)} \\
+         = \binom{N}{n} q^{\frac{1}{2}(N + m)} p^{\frac{1}{2}(N - m)}. 
+    \end{split}
+\end{equation},
+
+Since equation \ref{0.6} represents the probability of every specific point of the $1$-dimensional lattice it therefore forms the whole distribution. 
+
+Given the distribution $\mathbb{P}(m | N)$ we can therefore compute all its moments, so that given: 
+\begin{equation} \label{0.7}
+    \begin{split}
+         (pu + q)^N = \sum^N_{n=0} \binom{N}{n} q^{\frac{1}{2}(N + m)} p^{\frac{1}{2}(N - m)}. 
+    \end{split}
+\end{equation},
+
+We deduce $\mathbb{P}(m | N)$ is the coefficient in the binomial expansion of \ref{0.7}, so:
+\begin{equation} \label{0.8}
+    \begin{split}
+          \sum^N_{n=0} \mathbb{P}(m | N)  = [(pu + q)^N]_{u=1} = 1.
+    \end{split}
+\end{equation}
+
+Since the distribution is normalized to $1$ we can then compute, for instance, the expectation of $n$, also known in terms of moments as the first moment of $n$, as: 
+\begin{equation} \label{0.9}
+    \begin{split}
+          & \mathbb{E}[n] = \sum^N_{n=0} n  \mathbb{P}(m | N) = \sum^N_{n=0} n\left[\binom{N}{n}u^n p^n q^{N-n}\right]_{u=1} \\
+          & = \sum^N_{n=0} n\left[\binom{N}{n}u\frac{d}{du}(u^n p^n q^{N-n})\right]_{u=1} = u\frac{d}{du}\sum^N_{n=0} n\left[\binom{N}{n}u^n p^n q^{N-n}\right]_{u=1} \\
+          & = \left[u\frac{d}{du}(pu + q)^N\right]_{u=1} = Np. \\
+    \end{split}
+\end{equation}
+
+In the same way we can derive the square of the deviations from the point of origin or in terms of moments the second moment such as: 
+\begin{equation} \label{1}
+    \begin{split}
+          \mathbb{E}[n^2] = \left[\left(u\frac{d}{du}\right)^2(pu + q)^N\right]_{u=1} = Np + N(N-1)p^2.
+    \end{split}
+\end{equation}
+
+The variance of the variable will be defined based on the equation of \ref{1} and therefore as a function of the standard deviation of the distribution which in this context is nothing else than the some sort of measure of the distribution: 
+\begin{equation} \label{2}
+    \begin{split}
+          \text{Var}[n] = \sigma^2 = Npq
+    \end{split}
+\end{equation}
+
+Based on the standard deviation concept in this context, we can use \ref{0.9} and \ref{2} to get some kind of relative amplitude in the distribution such that: 
+\begin{equation} \label{3}
+    \begin{split}
+          \frac{\sigma}{\mathbb{E}[n]} = \sqrt{\frac{q}{p}}\frac{1}{\sqrt{N}}.
+    \end{split}
+\end{equation}
+
+Note some interesting features about \ref{3}, first whenever $N$ increases, $\sqrt{N}$ increases and therefore this relative amplitude of the distribution is reduced and note similar scenarios occur if the ratio difference in $\sqrt{\frac{q}{p}}$ decreases and the other way around if it increases and the distribution is therefore \emph{self-averaging}. 
+
+So, now, not in terms of steps but in terms of the position after $N$ steps it will be then given by: 
+\begin{equation} \label{1.14}
+    \begin{split}
+          \mathbb{E}[m] = N(p - q).
+    \end{split}
+\end{equation}
+
+In the same way the second moment and therefore square of the deviations from the point of origin will be given by:
+\begin{equation} \label{1.15}
+    \begin{split}
+          \mathbb{E}[m^2] = 4 \mathbb{E}[n^2] - 4 \mathbb{E}[n^2]N + N^2 = 4\sigma^2+\mathbb{E}[m]^2.
+    \end{split}
+\end{equation}
+
+The variance is then the standard deviation squared so: 
+\begin{equation} \label{2.16}
+    \begin{split}
+          & \sigma_m^2 = 4 \sigma ^2 = 4Npq. \\
+    \end{split}
+\end{equation}
+
+Note that if by symmetry $p = 1 = \frac{1}{2}$ then $\sigma_m^2 = N$ which is known simply as the \emph{free difusion}. 
+
+As we see the random walks are nothing else than a non-decreasing stochastic process that fluctuates in each step and this is essential to introduce the stochastic differential equations.  
+
+\subsection{Distributions}
+
+
+
+The binomial distribution for $Np \rightarrow \infty$ in the random walk can be used to approximate the factorials in the binomial distribution as: 
+\begin{equation} \label{2.17}
+    \begin{split}
+          & ln(N!) = \left(N + \frac{1}{2}\right)ln(N) - N + \frac{1}{2}ln(2\pi) + \mathcal{O}(\frac{1}{N}). \\
+    \end{split}
+\end{equation}
+
+From \ref{2.17} we can derive $ln (\mathbb{P}(m | N))$ such as:
+\begin{equation} \label{2.17}
+    \begin{split}
+          & ln(\mathbb{P}(m | N)) = \left(N + \frac{1}{2}\right)ln(N) - \left(\frac{N+m}{2}+\frac{1}{2}\right)ln\left(\frac{N+m}{2}\right)-\left(\frac{N-m}{2}+\frac{1}{2}\right)ln\left(\frac{N-m}{2}\right) \\
+          & + \frac{N+m}{2}ln(p) + \frac{N-m}{2}ln(q) - \frac{1}{2}ln(2\pi). \\
+    \end{split}
+\end{equation}
+
+When $N \rightarrow \infty$ we see, or we expect, the average of the distribution to be at the peak of the distribution because it is gaussian and therefore \emph{bell-shaped} so we can approximate it as:
+\begin{equation} \label{2.18}
+    \begin{split}
+          & m = N(p - q) + \delta m. \\
+    \end{split}
+\end{equation}
+
+From which can be derived the following equality: 
+\begin{equation} \label{2.18}
+    \begin{split}
+          & \frac{N+m}{2} = Np+\frac{\delta m}{2} \text{ and } \frac{N-m}{2} = Nq+\frac{\delta m}{2}. \\
+    \end{split}
+\end{equation}
+
+And using \ref{2.18} and \ref{2.17} we get: 
+\begin{equation} \label{2.18}
+    \begin{split}
+          & ln(\mathbb{P}(m | N)) = \left(N + \frac{1}{2}\right)ln(N) - \frac{1}{2}ln(2\pi) - \left(Np + \frac{1+\delta m}{2}\right) ln \left[Np\left(1 + \frac{\delta m}{2Np}\right)\right] \\
+          & - \left(Nq + \frac{1- \delta m}{2}\right) ln \left[Np\left(1 + \frac{\delta m}{2Np}\right)\right] + \left(Np + \frac{\delta m}{2}\right)ln(p) + \left(Nq + \frac{\delta m}{2}\right) ln(q) \\
+          & = -\frac{1}{2} ln(2\pi N pq) - \left(Np + \frac{1 + \delta m}{2}\right)ln\left(1 + \frac{\delta m}{2 Np}\right) - \left(Nq + \frac{1 - \delta m}{2}\right) ln\left(1 - \frac{\delta m}{2Np}\right). \\
+    \end{split}
+\end{equation}
+
+Then if we expand the logarithm: 
+\begin{equation} \label{2.19}
+    \begin{split}
+          & ln(1 \pm x) = \pm x - \frac{1}{2} x^2 + \mathcal{O}(x^3).  \\
+    \end{split}
+\end{equation}
+
+And using \ref{2.19} we get: 
+\begin{equation} \label{2.21}
+    \begin{split}
+          & ln(\mathbb{P}(m | N)) -\frac{1}{2} ln(2\pi)Npq + \frac{(p - q)}{4Npq}\delta m - \frac{1}{2} \frac{1}{4Npq}(\delta m)^2  \\
+          & = -\frac{1}{2} ln(2\pi)Npq + \frac{(p - q)}{\sigma^2_m} \delta m - \frac{1}{2} \frac{1}{2 \sigma^2_m}(\delta m)^2.  \\
+    \end{split}
+\end{equation}
+
+Note that in \ref{2.21} was used the equality $\sigma^2_m = 4Npq$. Also in the second equality it is of $\mathcal{O}((Np)^{-1/2})$ and therefore can be removed when $Np \rightarrow \infty$, such that: 
+\begin{equation} \label{2.22}
+    \begin{split}
+          & \mathbb{P}(m | N) \rightarrow \frac{2}{\sqrt{2\pi \sigma^2_m}}exp\left(-\frac{1}{2} \frac{(\delta m)^2}{\sigma^2_m}\right).   \\
+    \end{split}
+\end{equation}
+
+Finally when we are interested in to know the probability to find the random walk in an specific interval $2\Delta x$ around a specific position x in a particular time t,if we define $\Delta x \rightarrow 0$, $\Delta t \rightarrow 0$, $D = 2pq \frac{(\Delta x)^2}{\Delta t}$, $\upsilon = (p - q)\frac{\Delta x}{\Delta t}$, then we can find it as: 
+\begin{equation} \label{2.23}
+    \begin{split}
+           & \mathbb{P}(x | t) = \frac{1}{\sqrt{4\pi Dt}}exp\left(- \frac{(x-\upsilon t)^2}{4Dt}\right). \\
+    \end{split}
+\end{equation}
+
+Finally just note in \ref{2.23} we assume the prerequirement $p(x, t) = \delta(x)$ \cite{mundy2014random}.
+
+\subsection{Random walks and stochastic differential equations}
+
+The random walks introduced in the last part are really related with the stochastic differential equations. Both are really important concepts in many areas, as probability theory, stochastic theory, mathematical finance among other topics. Random walks can be used, for instance, to model the behavior of a series of processes with uncertainty, as the stock prices, and can be used to make predictions about future movements or states of the system as we did in the last section. 
+
+It is here where stochastic differential equations become relevant since they can be used to improve the study of predictions. Stochastic differential equations are used to model systems that evolve over time and are influenced by random forces. As the markov chains derivation in stochastic differential equations are really important tools for understanding and study of predictions. \cite{van1976stochastic}
+
+\subsection{Stochastic differential equations}
+
+A stochastic differential equation is a type of differential equation that contains one or more random variables or stochastic processes and it is just and extension of the ordinary differential equation. An ordinary differential equation is defined as: 
+\begin{equation} \label{2.24}
+    \begin{split}
+           & \frac{dx(t)}{dt} = f(t, x), dx(t) = f(t, x)dt. \\
+    \end{split}
+\end{equation}
+
+with a given initial condition $x(0) = x_0$, so it can be written as an integral such that: 
+\begin{equation} \label{2.24}
+    \begin{split}
+           & x(0) = x_0 + \int^t_0 f(s, x(s))ds, \\
+    \end{split}
+\end{equation}
+
+note that if \ref{2.24} had solution, it would simply be $x(t) = x(t, x_0, t_0)$ assuming $x(0) = x_0$.
+
+Now let's take any random differential equation, \emph{random in the sense of any}, as for instance one similar to \ref{2.24}: 
+\begin{equation} \label{2.25}
+    \begin{split}
+           &  \frac{dx(t)}{dt} = a(t)x(t), x(0) = x_0. \\
+    \end{split}
+\end{equation}
+
+Note that in \ref{2.25} we do not see anything beyond a normal ordinary differential equation. Now, if we assume $a(t)$ is not a deterministic parameter but rather a stochastic variable, we can get in exchange a stochastic differential equation. We can then define $a(t)$ as: 
+\begin{equation} \label{2.26}
+    \begin{split}
+           &  a(t) = f(t) + h(t)\xi(t). \\
+    \end{split}
+\end{equation}
+
+Note $\xi(t)$ is simply a not deterministic value ---assume it is a white noise process---. We then get:
+\begin{equation} \label{2.27}
+    \begin{split}
+           &  \frac{dX(t)}{dt} = f(t)X(t) + h(t)X(t)\xi(t). \\
+    \end{split}
+\end{equation}
+
+then if we write it in the differential form, and we use $dW(t) = \xi(t)dt$ where $W(t)$ is a brownian motion we get:
+\begin{equation} \label{2.28}
+    \begin{split}
+           & dX(t) = f(t)X(t)dt + h(t)X(t)dW(t). \\
+    \end{split}
+\end{equation}
+
+From \ref{2.28} we derive then the usual form of a stochastic differential equation: 
+\begin{equation} \label{2.29}
+    \begin{split}
+           & dX(t) = f(t, X(t, \omega))dt + g(t, X(t, \omega))dW(t, \omega). \\
+    \end{split}
+\end{equation}
+
+In this case $\omega$ just implies that $X(t, \omega) = 0$ by definition. So, from \ref{2.27} we derive: 
+\begin{equation} \label{2.30}
+    \begin{split}
+           & dY(t, \omega) = \mu(t)dt + \sigma(t)dW(t, \omega). \\
+    \end{split}
+\end{equation}
+
+Finally if $f(t, X(t, \omega)), g(t, X(t, \omega)), W(t, \omega) \in \mathbb{R}$ we can express \ref{2.29} in integral form \cite{protter2005stochastic} as:
+\begin{equation} \label{2.31}
+    \begin{split}
+           & X(t, \omega) = X_0 + \int^t_0 f(s, X(s, \omega))ds + \int^t_0 g(s, X(s, w))dW(s, w). \\
+    \end{split}
+\end{equation}
+
+\section{Text generation algorithms}
+
+\subsection{Introduction and Motivation}
+
+Let's take a brief detour to talk about a recent event in the artificial intelligence world: On November 30th 2022, the OpenAI research laboratory released a new chatbot prototype called ChatGPT. This is an artificial intelligence language processing model that simulates a conversation between the user and another person.
+
+This model quickly gained attention due to its realistic and natural answers, making most replies seem written by a human instead of an algorithm. Its language processing model allows it to seemingly understand your prompt and generate an appropriate response. These two impressive feats have made ChatGPT a very well known chatbot in both social media and professional settings.
+
+\bigskip
+
+Although at first glance upon using the prototype it may look like the amount of progress in the artificial intelligence field has reached science fiction territory, there are two key components that one must remember:
+
+Firstly, even if the response might look like the results of an online browser search, what it is doing is something completely different. The program is not copying the best internet posts to the question, but rather it is generating a completely new text from scratch, word for word, until it answers the question. Note that this word for word text generation implies some level of randomness in the response, as can be seen by asking the same thing several times and receiving different responses.
+
+Secondly, even if it might look like there is some semblance of logic in the replies due to the usual coherence of the sentences, there is no such thing to make sure the overall text makes sense. Asking for non-direct problems that need a few steps to solve makes this clear, for example asking "I am 7 years older than my sister, she has 2 less years than half my age. How old is my sister?" will usually result in a completely wrong and nonsensical answer. Needless to say inputting anything more complicated than that gets even worse.
+
+\bigskip
+
+Even with its flaws, ChatGPT is an incredible prototype that has reached and astonished countless people, with many wondering how is it possible to build such a program. In this section we will explain the basic ideas behind the first versions of such models, and some of the improvements that have been made to make them more realistic.
+
+Overall, a language model can be divided in two main parts: The language processing, which tries to understand the input to give an adequate response, and the text generation, which creates the text that is given as a response. Some of the basis behind these two parts can be found \cite{jelinek1985markov}, as well as some other applications such as text encoding or speech recognition which are largely based on the same models. In this section we will focus on the text generation algorithms.
+
+
+\subsection{Basic text generation model}
+
+In order to turn a text into a Markov chain there are two of its properties that we have to remember to keep in mind:
+
+The first one is that Markov chains are a memory-less process. This means that the next state of the chain only depends on what the current state is, independently of what the process has gone through before.
+
+The second one is that, throughout this section, we will only work with discrete time Markov chains.
+
+\bigskip
+
+The question we pose now is: How do we build a Markov chain so that it can represent a given text?
+
+We can start by considering each different word a possible state of the chain. One word X will lead to another word Y if, in the training text provided, there is some point where word X is followed by word Y. The probability of the chain switching to this state depends on the amount of instances where word Y follows word X in proportion to how many other words follow word X.
+
+As an example, let's use the training text: \textit{The sun and the moon are bright}. In this case the Markov chain associated to this text has 6 possible states, one for each different word. The connections between the states look as follows:
+
+\begin{figure}[H]
+\begin{center}
+    \includegraphics[width=5cm]{JEMS/imagesHMM/MarkovChain_Example1.png}
+\end{center}
+\end{figure}
+
+We now need to establish what the probability of going to each state is. To do this, we first build a vector for each different state listing how many times it precedes each of the other words in the training text. For example, the vector associated to the state \textit{the} would look like this:
+
+\begin{center}
+\begin{tabular}{|c|cccccc|}
+\hline
+  & (the) & (sun) & (and) & (moon) & (are) & (bright) \\
+ the & 0 & 1 & 0 & 1 & 0 & 0 \\
+ \hline
+\end{tabular}
+\end{center}
+
+We can build this vector for each of the possible states, and have each of them be the rows of what we will call the instances matrix:
+
+\begin{center}
+\begin{tabular}{|c|cccccc|}
+\hline
+ & the & sun & and & moon & are & bright \\
+\hline
+the & 0 & 1 & 0 & 1 & 0 & 0 \\
+sun & 0 & 0 & 1 & 0 & 0 & 0 \\
+and & 1 & 0 & 0 & 0 & 0 & 0 \\
+moon & 0 & 0 & 0 & 0 & 1 & 0 \\
+are & 0 & 0 & 0 & 0 & 0 & 1 \\
+bright & 0 & 0 & 0 & 0 & 0 & 0 \\
+\hline
+\end{tabular}
+\end{center}
+
+Finally, if we normalize the instances matrix' rows we obtain the probability matrix that is used to define the Markov chain's chances to go from one state to the next:
+
+\begin{center}
+$\begin{pmatrix}
+\nearrow & the & moon & and & sun & are & bright \\
+the & 0 & 0.5 & 0 & 0.5 & 0 & 0 \\
+moon & 0 & 0 & 1 & 0 & 0 & 0 \\
+and & 1 & 0 & 0 & 0 & 0 & 0 \\
+sun & 0 & 0 & 0 & 0 & 1 & 0 \\
+are & 0 & 0 & 0 & 0 & 0 & 1 \\
+bright & 0 & 0 & 0 & 0 & 0 & 0 \\
+\end{pmatrix}$
+\end{center}
+
+\begin{figure}[H]
+\begin{center}
+    \includegraphics[width=6cm]{JEMS/imagesHMM/MarkovChain_Example2.png}
+\end{center}
+\end{figure}
+
+Now that we have a complete Markov chain we can start generating text with it. The process to do so is simple: Start with a random word from the training text, and use that word as the starting state in the chain to generate a new word. Now we have a generated text with two words; we define the current state of the Markov chain as the last word in the generated text so far. We can use this newly defined state to generate a new word, which we add to the generated text and increase its length by one. This process can be repeated until we obtain a text of the desired length.
+
+\bigskip
+
+Using this model and a long enough training text to fit the length of the text we want to generate, we can create a completely new text that replicates the style and contents of the training text.
+
+At least that's in theory. The reality is that with such a simple model the results are in no way realistic, just some random words put together. An example of what we can get using this model with a relatively long training text is the following:
+
+\textit{the subject he was all the request seemed to a long anti-religious poem in a later this poem in front of the chequered figure in May which affected Berlioz alone alone was saying was so powerful}
+
+\bigskip
+
+As we can see, although we have been able to use Markov chains to generate a completely new text, the results leave much to be desired. In the next section we will explore a few ways to improve this model and obtain a more natural text.
+
+
+\subsection{Model improvements}
+
+\subsubsection{Input token length}
+
+The first idea one could have to make more coherent sentences is to try and keep some of the context behind each word. For example, in a random text the word \textit{upon} can be followed by multiple options, all of them viable in a normal setting. However, if the previous word is \textit{once} it's probably referring to the expression \textit{once upon a time} and the probability of the next generated word being \textit{a} should rise accordingly.
+
+However, it is important to remember that Markov chains are a memory-less process, so we can't check what the previous chain state was. The solution to this is to redefine the current state of the Markov chain not as the last word, but as the last X words of the generated text. By considering sets of more than one word we are able to keep some of the context like we wanted while keeping the process memory-less. We will call these new states of the chain the input tokens.
+
+As an example, let's use the training text: \textit{The sun and the moon and the stars}, and let's use input tokens of length 2. We can build the same vectors as before checking pairs of words instead of single words, and checking the word after said pair in the training text. For example, the vector associated to the input token \textit{and the} would be:
+
+\begin{center}
+\begin{tabular}{|c|ccccc|}
+\hline
+  & (the) & (sun) & (and) & (moon) & (stars) \\
+ and the & 0 & 0 & 0 & 1 & 1 \\
+ \hline
+\end{tabular}
+\end{center}
+
+Just like in the previous section we can build a matrix with the rows being the vector corresponding to each pair of words, and then normalize each row to obtain the probability matrix defining the new model:
+
+\begin{center}
+$\begin{pmatrix}
+\nearrow & the & sun & and & moon & stars \\
+\textit{the sun} & 0 & 0 & 1 & 0 & 0 \\
+\textit{sun and} & 1 & 0 & 0 & 0 & 0 \\
+\textit{and the} & 0 & 0 & 0 & 0.5 & 0.5 \\
+\textit{the moon} & 0 & 0 & 1 & 0 & 0 \\
+\textit{moon and} & 1 & 0 & 0 & 0 & 0 \\
+\textit{the stars} & 0 & 0 & 0 & 0 & 0 \\
+\end{pmatrix}$
+\end{center}
+
+\begin{figure}[H]
+\begin{center}
+    \includegraphics[width=10cm]{JEMS/imagesHMM/MarkovChain_Example3.png}
+\end{center}
+\end{figure}
+
+The results of implementing this idea turn out to be much less random and the words that are put together make more sense. An example of what we can get using this model with a relatively long training text and an input token length of 2 is the following:
+
+\textit{The man was seven feet tall but narrow in the shoulders, incredibly thin. Ivan Nikolayich had written this poem in record time, but unfortunately the editor had commissioned the poet to write a long anti-religious poem for one of the strangest appearance.}
+
+\bigskip
+
+Note that this implementation can also bring a grave problem if not calibrated correctly: If the input token length is too long, the word sets of that length will be so unique that it will in most cases appear only once in the training text. This means that there will usually be one option for the Markov chain to take when generating new text, which will make most of the generated text a copy of the training text. This is not what we aim to achieve.
+
+
+\subsubsection{Output token length}
+
+In a similar way to the last section we can consider what happens when, instead of changing the amount of words in the Markov chain definition, we change the amount of words generated each time. Let's build the matrix associated to the same example training text as in the last section, \textit{The sun and the moon and the stars}, and see what the text generation process looks like:
+
+\begin{center}
+$\begin{pmatrix}
+\nearrow & \textit{the sun} & \textit{sun and} & \textit{and the} & \textit{the moon} & \textit{moon and} & \textit{the stars} \\
+\textit{the} & 0 & 0.5 & 0 & 0 & 0.5 & 0 \\
+\textit{sun} & 0 & 0 & 1 & 0 & 0 & 0 \\
+\textit{and} & 0 & 0 & 0 & 0.5 & 0 & 0.5 \\
+\textit{moon} & 0 & 0 & 1 & 0 & 0 & 0 \\
+\textit{stars} & 0 & 0 & 0 & 0 & 0 & 0 \\
+\end{pmatrix}$
+\end{center}
+
+\begin{figure}[H]
+\begin{center}
+    \includegraphics[width=8cm]{JEMS/imagesHMM/MarkovChain_Example4.png}
+\end{center}
+\end{figure}
+
+This change in the amount of generated words has an interesting effect on the resulting text. Note that the process in this last model has more overall connections between the states than the prior ones, although due to the small size of the example it may be hard to see. While it still generates some chunks of text with sense due to the amount of words generated each step, it is more probable that it will jump to more unusual states than in the previous section's model.
+
+Considering how we want to build a realistic and natural looking text this characteristic may look almost useless. However, although changing the input token size helps improve the results it may also make large chunks of the generated text be identical or very similar to the training text, which we want to avoid. This is why changing the length of both the input and output tokens could be a useful approach: The first one used to control the amount of context kept behind each word, the latter one to randomise the generated text and make it less similar to the original one.
+
+
+\subsubsection{Implementation details}
+
+Some readers may have noticed that we are glossing over some details when generating the new text, such as punctuation, capitalization, etc.
+
+\bigskip
+
+In the case of capitalization, we can simply lowercase all words before calculating the instances matrix to build the Markov chain. This will also avoid any issues where the code considers two of the same word as different states because of capitalization. Once the text has been generated we can add some simple post-processing code that capitalizes the character after a point or a semicolon accordingly.
+
+\bigskip
+
+The case of punctuation is a more interesting one. The most common way to approach this issue is to consider punctuation symbols as their own separate words and add them as possible states to the chain. This may result in some sentences having out of place commas and points, but overall it has the same realistic result as the text itself and should not be the biggest cause of problems.
+
+An alternative to this solution to the punctuation problem would be to add some sort of grammatical rules to the algorithm that detect when to add a comma or end a sentence. One could also implement such an algorithm together with the Markov chain model to obtain a more realistic and natural result. Overall it seems like an interesting branch of research to improve this basic text generation model.
+
+Some further detail on the input and output token length modifications can be found in \cite{szymanski2004line}.
+
+\bigskip
+
+Another issue that arises is if the last token in the text is unique and does not appear anywhere else. In this case if the chain reaches that state it will not be able to generate a new word, since the process has no options to go to from that state.
+
+There are several ways to go about this problem. The simpler one is to stop generating the text and send the user a message explaining what has happened. Another viable option is, were this case to show up while running the algorithm, to add a random token from the text. Considering the usual length of the training texts used for such programs, the probability of encountering this extreme case is so low that it will not affect the grand scheme of the generated text.
+
+
+\subsection{Test program}
+
+In order to provide the reader with an interactive way to test out and experiment with the Markov chain text generation algorithm described through these sections a Matlab script has been created and is publicly available through GitHub. The repository contains two files:
+
+The first one is a text file called \texttt{text.txt}. Here is where one can put the training text that will be used to generate the Markov chain used in the text generator.
+
+The second one is the Matlab script that builds the text generation model. In the initial part of the scripts one can find parameters for the length of the output text, as well as the length of the input and output tokens, so that the user can tweak and experiment with them as they wish.
+
+Please note that, while the program already has all the model and token length options mentioned in the previous sections, some quality of life and general improvements will be made in the future.
+
+The test program can be found at the following link: \texttt{shorturl.at/cDR45}
+
+
+\subsection{Text generation overview}
+
+In this application of the Markov chains we have seen the origins of the current text processing and response artificial intelligence programs, which have been rising in popularity in the last few months. We have seen how to convert a training text into a Markov chain an how to generate text using this basic model. We have then made some improvements to the basic model by changing the amount of words read at once and the amount of words generated at once, and seen that changing these parameters can substantially increase the realism of the result.
+
+Although the generated text with the presented model still does not look like something a person, it is important to remember where such advanced programs come from, and how starting with such simple ideas and models one can slowly but surely improve them until they reach the masterpieces that are nowadays artificial intelligence language processing models.
+
+
+
+
+
+\section{Conclusion}
+
+As we reviewed, Markov chains are really powerful not only to model or study systems and probabilities but also to innovate in text generation or to model random walks. This is the most interesting fact about Markov chains, it is absolutely powerful because in theoretical terms its base is always really similar, we always can  start by studying the transitioning from specific states to others --- since by definition others are not affected by current states ---. This property makes Markov chains a useful tool for predicting future states and understanding the long-term behavior of a large amount of pure and applied situations and problems. With the use of Markov chains, many real-world problems can be effectively modeled and analyzed, leading to more accurate predictions and better decision making.
+
+We also saw how the combination with additional tools to as the stochastic differential equations can help to improve even more the randomness and uncertainty. 
+
+As we see, the possibilities are yet to explore, however, not because of that limited but the other way around probably unlimited just as the transitions in a Markov chain matrix. 
+
+\section{Acknowledgements}
+
+We are specially thankful for the resources provided by 
+the universities and the professors of both the Valencia Polytechnic University and the University of Valencia from which we intensively used. 
+ 
+
+
+%------
+
+
+
+
+
+
+
+
+%------
+% Insert acknowledgments and information
+% regarding funding at the end of the last
+% section, i.e., right before the bibliography.
+%------
+
+
+
+%------
+% Insert the bibliography.
+\bibliographystyle{plain} % We choose the "plain" reference style
+\bibliography{JEMS/biblio} % Entries are in the refs.bib file
+%------
+
+
+
+% \begin{thebibliography}{99}
+
+% \bibitem{article1}
+% Petrunin, A.: Parallel transportation for Alexandrov space with curvature bounded below.
+% Geom. Funct. Anal. \textbf{8}, 123--148 (1998) \Zbl{0903.53045} \MR{1601854}
+
+%------ Example for a paper in journal:
+% \bibitem{article1}
+% Petrunin, A.: Parallel transportation for Alexandrov space with curvature bounded below.
+% Geom. Funct. Anal. \textbf{8}, 123--148 (1998) \Zbl{0903.53045} \MR{1601854}
+
+%------ Example for a book:
+% \bibitem{book1}
+% Ziemer, W.~P.: Weakly differentiable functions. Grad. Texts in Math. 120,
+% Springer, New York (1989) \Zbl{0692.46022} \MR{1014685}
+
+%------ Example for a paper in a book:
+% \bibitem{incollection1}
+% Milne, J.~S.: Introduction to Shimura varieties. In: Harmonic Analysis, the
+% Trace Formula, and Shimura Varieties (M.~W. Marcellin, E.~Giorgi, eds.),
+% Clay Math. Proc. 4, Amer. Math. Soc., Providence, RI, 265--378 (2005)
+% \Zbl{1148.14011} \MR{2192012}
+
+%------ Example for a preprint on arXiv:
+% \bibitem{preprint1}
+% Nguyen, D.~V., Chilappagari, S.~K., Marcellin, M.~W., Vasic, B.:
+% LDPC codes from latin squares free of small trapping sets.
+% \href{http://arxiv.org/abs/1008.4177}{arXiv:1008.4177} (2010)
+
+%------ Example for a report:
+% \bibitem{report1}
+% Schöberl, J.: Commuting quasi-interpolation operators.
+% Technical report isc-01-10-math, Texas A\&M University,
+% \url{www.isc.tamu.edu/publications-reports/tr/0110.pdf} (2001)
+
+%------ Example for a thesis:
+% \bibitem{thesis1}
+% Giorgi, E.: The geometric universe.
+% Ph.D. thesis, University of Maryland, College Park (2002)
+
+% \end{thebibliography}
+
+\end{document}
